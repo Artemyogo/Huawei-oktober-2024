@@ -1,0 +1,3 @@
+/Users/artemi/Documents/repos/Huawei-oktober-2024/out/build/CMakeFiles/main.dir
+/Users/artemi/Documents/repos/Huawei-oktober-2024/out/build/CMakeFiles/edit_cache.dir
+/Users/artemi/Documents/repos/Huawei-oktober-2024/out/build/CMakeFiles/rebuild_cache.dir
