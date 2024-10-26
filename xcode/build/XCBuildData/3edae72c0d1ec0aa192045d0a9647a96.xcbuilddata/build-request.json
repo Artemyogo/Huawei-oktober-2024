@@ -16,6 +16,19 @@
   "hideShellScriptEnvironment" : false,
   "parameters" : {
     "action" : "build",
+    "activeArchitecture" : "arm64",
+    "activeRunDestination" : {
+      "disableOnlyActiveArch" : false,
+      "platform" : "macosx",
+      "sdk" : "macosx15.0",
+      "sdkVariant" : "macos",
+      "supportedArchitectures" : [
+        "arm64e",
+        "arm64",
+        "x86_64"
+      ],
+      "targetArchitecture" : "arm64"
+    },
     "arenaInfo" : {
       "buildIntermediatesPath" : "",
       "buildProductsPath" : "",
