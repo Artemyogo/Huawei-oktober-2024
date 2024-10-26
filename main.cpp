@@ -40,7 +40,7 @@ struct edge {
     Point l, r;
     int up;
     edge() {}
-    edge(Point a, Point b, bool sw){
+    edge(Point a, Point b, int sw){
         l = a;
         r = b;
         up = sw;
@@ -55,9 +55,11 @@ struct event{
 };
 
 inline bool operator <(const event& e1, const event& e2){
-    if(!eq(e1.x, e2.x))
+    if(abs(e1.x - e2.x) > eps)
         return e1.x < e2.x;
-    return e1.type > e2.type;
+    if(abs(e1.type) != abs(e2.type))
+        return abs(e1.type) < abs(e2.type);
+    else return e1.type < e2.type;
 }
 
 
@@ -75,13 +77,15 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj) 
     int n = vertices.size();
     vector<vector<bool>> used(n);
     for (int i = 0; i < n; i++) {
+        assert(adj[i].size() > 1    );
         used[i].assign(adj[i].size(), 0);
         auto compare = [&](int l, int r) {
             Point pl = vertices[l] - vertices[i];
             Point pr = vertices[r] - vertices[i];
+            cout << pl.cross(pr);
             if (pl.half() != pr.half())
                 return pl.half() < pr.half();
-            return pl.cross(pr) > 0;
+            return pl.cross(pr) > eps;
         };
         sort(adj[i].begin(), adj[i].end(), compare);
     }
@@ -132,10 +136,12 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj) 
     return faces;
 }
 
+ifstream fin("small_Minsk.txt");
+
 ld readlds(){
     string st;
     
-    cin >> st;
+    fin >> st;
     return stold(st);
 }
 
@@ -147,6 +153,7 @@ void scanline(ve<Point> p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& users){
     for(int it = 0; it < faces.size(); it++){
         ve<int> &f = faces[it];
         int prev = f.back();
+
         for(auto i : f){
             if(p[prev].x < p[i].x){
                 es.push_back({1, p[prev].x, edge(p[prev], p[i], it)});
@@ -159,10 +166,14 @@ void scanline(ve<Point> p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& users){
         es.push_back({0, i.x, edge(i, i, 0)});
     sort(es.begin(), es.end());
     set<edge, decltype(*edge_cmp)> st(edge_cmp);
+    
     for(int i = 0; i < es.size(); i++){
         auto [t, x, e, id] = es[i];
         if(t == 1){
+            int prevsz = st.size();
             st.insert(e);
+//            assert(prevsz == st.size() - 1);
+            
         }
         else if(t == -1){
             st.erase(e);
@@ -180,39 +191,38 @@ void scanline(ve<Point> p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& users){
 }
 
 int main(){
-    ios_base::sync_with_stdio(0); cin.tie(0);
-    
     int n;
-    cin >> n;
-    cout << n;
+    fin >> n;
     ve<Point> pts(n);
     for(int i = 0; i < n; i++){
         int id;
-        cin >> id;
+        fin >> id;
         realids[id] = i;
         pts[i].x = readlds();
         pts[i].y = readlds();
     }
     ve<ve<int> > g(n);
     int m;
-    cin >> m;
+    fin >> m;
     for(int i = 0; i < m; i++){
         int a, b;
-        cin >> a >> b;
+        fin >> a >> b;
         a = realids[a]; b = realids[b];
         g[a].push_back(b);
         g[b].push_back(a);
     }
     ve<ve<int> > faces = find_faces(pts, g);
     int t;
-    cin >> t;
+    fin >> t;
     ve<Point> users(t);
     for(auto& i : users){
         int id;
-        cin >> id;
+        fin >> id;
         i.x = readlds();
         i.y = readlds();
     }
     ve<int> cnt(faces.size(), 0);
     scanline(pts, faces, cnt, users);
+    for(auto i : cnt)
+        cout << i << " ";
 }
