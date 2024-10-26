@@ -125,11 +125,8 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj) 
                     break;
                 }
             }
-            if (sign <= 0) {
-                faces.insert(faces.begin(), face);
-            } else {
+            if (sign > 0)
                 faces.emplace_back(face);
-            }
         }
     }
     return faces;
@@ -195,8 +192,6 @@ int main(){
         realids[id] = i;
         pts[i].x = readlds();
         pts[i].y = readlds();
-        if(pts[i].x > 53.9258)
-            cout << "Yes\n";
     }
     ve<ve<int> > g(n);
     int m;
@@ -209,23 +204,6 @@ int main(){
         g[b].push_back(a);
     }
     ve<ve<int> > faces = find_faces(pts, g);
-    //deleting outer face
-    {
-        ve<ve<int> > nfaces;
-        for(int it = 0; it < faces.size(); it++){
-            ve<int> &f = faces[it];
-            ld sum = 0;
-            int prev = f.back();
-            for(auto i : f){
-                sum += (pts[i].x - pts[prev].x) * (pts[i].y + pts[prev].y);
-                prev = i;
-            }
-            if(sum < 0){
-                nfaces.push_back(f);
-            }
-        }
-        faces = nfaces;
-    }
     int t;
     cin >> t;
     ve<Point> users(t);
