@@ -35,8 +35,11 @@ struct Point {
 const ld eps = 1e-16;
 bool le(const ld& a, const ld& b) { return a <= b; }
 bool eq(const ld& a, const ld& b) { return abs(a - b) <= eps; }
-int sgn(const ld& x) { return le(x, 0) ? eq(x, 0) ? 0 : -1 : 1; }
+int sgn(const ld& x) { return eq(x, 0) ? 0 : le(x, 0) ? -1 : 1; }
 
+int sgn(vector<Point> &poly) {
+
+}
 
 struct edge {
     Point l, r;
@@ -100,7 +103,6 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj) 
         }
     }
     for (int i = 0; i < n; i++) {
-        if (adj[i].size() == 1) continue;
         used[i].assign(adj[i].size(), 0);
         auto compare = [&](int l, int r) {
             Point pl = vertices[l] - vertices[i];
@@ -140,31 +142,23 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj) 
             }
             reverse(face.begin(), face.end());
             int sign = 0;
-            for (int j = 0; j < face.size(); j++) {
-                int j1 = (j + 1) % face.size();
-                int j2 = (j + 2) % face.size();
-                ld val = vertices[face[j]].cross(vertices[face[j1]], vertices[face[j2]]);
-                if (val > 0) {
-                    sign = 1;
-                    break;
-                } else if (val < 0) {
-                    sign = -1;
-                    break;
-                }
+            Point p1 = vertices[face[0]];
+            ld sum = 0;
+            for (int i = 0; i < face.size(); ++i) {
+                Point p2 = vertices[face[i]];
+                Point p3 = vertices[face[(i + 1) % face.size()]];
+                sum += (p2 - p1).cross(p3 - p2);
             }
-            if (sign > 0)
+            if (sgn(sum) > 0)
                 faces.emplace_back(face);
         }
     }
     return faces;
 }
 
-ifstream fin("small_Minsk.txt");
-
 ld readlds(){
     string st;
-
-    fin >> st;
+    cin >> st;
     return stold(st);
 }
 
@@ -264,37 +258,45 @@ struct dsu {
 const int L = 512, R = 1024;
 
 int main(){
+//    assert(freopen("small_Minsk.txt", "r", stdin));
     int n;
-    fin >> n;
+    cin >> n;
     ve<Point> pts(n);
     for(int i = 0; i < n; i++){
         int id;
-        fin >> id;
+        cin >> id;
         realids[id] = i;
         pts[i].x = readlds();
         pts[i].y = readlds();
     }
     ve<ve<int> > g(n);
     int m;
-    fin >> m;
+    cin >> m;
     for(int i = 0; i < m; i++){
         int a, b;
-        fin >> a >> b;
+        cin >> a >> b;
         a = realids[a]; b = realids[b];
         g[a].push_back(b);
         g[b].push_back(a);
     }
     ve<ve<int> > faces = find_faces(pts, g);
+    for (auto &vec : faces) {
+        for (auto &i : vec) {
+            cout << "(" << pts[i].x << ", " << pts[i].y << ") ";
+        }
+        cout << "end\n";
+    }
     int z = faces.size();
     int t;
-    fin >> t;
+    cin >> t;
     ve<Point> users(t);
     for(auto& i : users){
         int id;
-        fin >> id;
+        cin >> id;
         i.x = readlds();
         i.y = readlds();
     }
+    return 0;
     ve<int> cnt(faces.size(), 0);
     scanline(pts, faces, cnt, users);
 //    for(auto i : cnt)
