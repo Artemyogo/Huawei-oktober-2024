@@ -1,8 +1,8 @@
 {
   "buildCommand" : {
-    "command" : "prepareForIndexing",
-    "enableIndexBuildArena" : false,
-    "targets" : null
+    "command" : "build",
+    "skipDependencies" : false,
+    "style" : "buildAndRun"
   },
   "configuredTargets" : [
     {
@@ -10,7 +10,7 @@
     }
   ],
   "containerPath" : "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/main.xcodeproj",
-  "continueBuildingAfterErrors" : true,
+  "continueBuildingAfterErrors" : false,
   "dependencyScope" : "workspace",
   "enableIndexBuildArena" : false,
   "hideShellScriptEnvironment" : false,
@@ -42,17 +42,18 @@
     "overrides" : {
       "synthesized" : {
         "table" : {
+          "ENABLE_ADDRESS_SANITIZER" : "YES",
           "ENABLE_PREVIEWS" : "NO",
-          "ENABLE_XOJIT_PREVIEWS" : "NO",
+          "ENABLE_UNDEFINED_BEHAVIOR_SANITIZER" : "YES",
+          "ENABLE_XOJIT_PREVIEWS" : "YES",
           "ONLY_ACTIVE_ARCH" : "YES"
         }
       }
     }
   },
-  "qos" : "default",
   "schemeCommand" : "launch",
   "showNonLoggedProgress" : true,
-  "useDryRun" : true,
+  "useDryRun" : false,
   "useImplicitDependencies" : true,
   "useLegacyBuildLocations" : false,
   "useParallelTargets" : true

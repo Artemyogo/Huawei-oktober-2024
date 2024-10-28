@@ -42,16 +42,19 @@
     "overrides" : {
       "synthesized" : {
         "table" : {
+          "ENABLE_ADDRESS_SANITIZER" : "YES",
           "ENABLE_PREVIEWS" : "NO",
-          "ENABLE_XOJIT_PREVIEWS" : "YES",
+          "ENABLE_UNDEFINED_BEHAVIOR_SANITIZER" : "YES",
+          "ENABLE_XOJIT_PREVIEWS" : "NO",
           "ONLY_ACTIVE_ARCH" : "YES"
         }
       }
     }
   },
+  "qos" : "default",
   "schemeCommand" : "launch",
   "showNonLoggedProgress" : true,
-  "useDryRun" : false,
+  "useDryRun" : true,
   "useImplicitDependencies" : true,
   "useLegacyBuildLocations" : false,
   "useParallelTargets" : true

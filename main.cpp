@@ -150,7 +150,7 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
 
 }
 
-vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj) {
+vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, bool inner) {
     int n = vertices.size();
     vector<vector<bool>> used(n);
     vector<int> bfs;
@@ -222,7 +222,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj) 
                 Point p3 = vertices[face[(i + 1) % face.size()]];
                 sum += (p2 - p1).cross(p3 - p2);
             }
-            if (sgn(sum) > 0)
+            if ((!inner && sgn(sum) > 0) || (inner && sgn(sum) < 0))
                 faces.emplace_back(face);
         }
     }
@@ -236,6 +236,7 @@ ld readlds(){
 }
 
 int realids[MAXN];
+int inputids[MAXN];
 
 
 void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& users){
@@ -301,6 +302,7 @@ mt19937 rng(5);
 
 const int L = 512, R = 1024;
 
+
 int main(){
     assert(freopen("small_Minsk.txt", "r", stdin));
     int n;
@@ -309,6 +311,7 @@ int main(){
     for(int i = 0; i < n; i++){
         int id;
         cin >> id;
+        inputids[i] = id;
         realids[id] = i;
         pts[i].x = readlds();
         pts[i].y = readlds();
@@ -323,7 +326,7 @@ int main(){
         g[a].push_back(b);
         g[b].push_back(a);
     }
-    ve<ve<int> > faces = find_faces(pts, g);
+    ve<ve<int> > faces = find_faces(pts, g, 0);
     delete_inner(pts, faces);
     int z = faces.size();
     int t;
@@ -337,10 +340,6 @@ int main(){
     }
     ve<int> cnt(faces.size(), 0);
     scanline(pts, faces, cnt, users);
-    int sum = 0;
-        //    for(auto i : cnt)
-//        cout << i << " ";
-    cout << sum << endl;
     auto edges = init_edges(faces);
     dsu d(z);
     vector<int> cur_cnt(z);
@@ -372,9 +371,36 @@ int main(){
             }
             mx = max(mx, cur_cnt[d.get(i)]);
         }
-        if (done) break;
-        cout << iter++ << ": " << mn << ", " << mx << "\n";
+        if (done){ //this part sucks too
+            ve<ve<int>> comps(z);
+            for(int i = 0; i < z; ++i)
+                comps[d.get(i)].push_back(i);
+            ve<ve<int> > ans;
+            for(auto i : comps){
+                if(i.empty()) continue;
+                ve<ve<int> > curadj(n);
+                auto add_edge = [&](int u, int v){
+                    curadj[u].push_back(v);
+                    curadj[v].push_back(u);
+                };
+                for(auto k : i){
+                    add_edge(faces[k].front(), faces[k].back());
+                    for(int it = 1; it < faces[k].size(); it++)
+                        add_edge(faces[k][it], faces[k][it - 1]);
+                }
+                ve<ve<int> > cur = find_faces(pts, curadj, 1);
+                ans.push_back(cur[0]);
+            }
+            cout << ans.size() << "\n";
+            for(auto i : ans){
+                for(auto j : i)
+                    cout << inputids[j] << " ";
+                cout << "\n";
+            }
+            break;
+        }
+//        cout << iter++ << ": " << mn << ", " << mx << "\n";
     }
-    cout << "yay\n";
+//    cout << "yay\n";
     return 0;
 }
