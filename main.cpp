@@ -87,10 +87,11 @@ struct dsu {
     }
     void unite(int u, int v) {
         u = get(u), v = get(v);
-        if (u == v) {
-            return;
-        }
+        if (u == v) return;
+        if(p[u] > p[v]) swap(u, v);
+        p[u] += p[v];
         p[v] = u;
+        
     }
     void clear() {
         fill(p.begin(), p.end(), -1);
@@ -336,15 +337,10 @@ int main(){
     }
     ve<int> cnt(faces.size(), 0);
     scanline(pts, faces, cnt, users);
-    for (auto &vec : faces) {
-        for (auto &i : vec) {
-            cout << "(" << pts[i].x << ", " << pts[i].y << ") ";
-        }
-        cout << "end\n";
-    }
-    return 0;
-//    for(auto i : cnt)
+    int sum = 0;
+        //    for(auto i : cnt)
 //        cout << i << " ";
+    cout << sum << endl;
     auto edges = init_edges(faces);
     dsu d(z);
     vector<int> cur_cnt(z);
