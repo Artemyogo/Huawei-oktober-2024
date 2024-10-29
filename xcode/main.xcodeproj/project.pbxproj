@@ -9,7 +9,7 @@
 /* Begin PBXAggregateTarget section */
 		A973C19B9A5247EB8C5E0E88 /* ZERO_CHECK */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = FDED9FE9A1B84CFC8D5E97FA /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */;
+			buildConfigurationList = 409CD1B8F30E4E98B9DDF686 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */;
 			buildPhases = (
 				EEF595E81912ED2D84587AB8 /* Generate CMakeFiles/ZERO_CHECK */,
 			);
@@ -20,13 +20,13 @@
 		};
 		C4AF820EA1934768AB9DAE21 /* ALL_BUILD */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 52A21EFA8918439A889780BC /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */;
+			buildConfigurationList = 860EBD7D929E443385A54B77 /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */;
 			buildPhases = (
 				3F0C0B4FE02146BBC0D3F0AA /* Generate CMakeFiles/ALL_BUILD */,
 			);
 			dependencies = (
-				D1E18E9628BD4B878FE75044 /* PBXTargetDependency */,
-				6BED386FA7B442B1A9ACC9B8 /* PBXTargetDependency */,
+				B02466AD0FFA4FD6B13D03EA /* PBXTargetDependency */,
+				D946F92C0C82426D96023D8F /* PBXTargetDependency */,
 			);
 			name = ALL_BUILD;
 			productName = ALL_BUILD;
@@ -34,57 +34,57 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		772732F898034924A4BC7AAD /* /Users/artemi/Documents/repos/Huawei-oktober-2024/main.cpp */ = {isa = PBXBuildFile; fileRef = F82AF8D0F4494D7EB5D80150 /* /Users/artemi/Documents/repos/Huawei-oktober-2024/main.cpp */; };
-		9E8ADB00CA964457877EF08E /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */ = {isa = PBXBuildFile; fileRef = D8C25670FE34405DB8639F3D /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */; };
+		AAFDABB7FE6D44D7BD2FA0BB /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */ = {isa = PBXBuildFile; fileRef = 962254AD705B4A46A6971CE3 /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */; };
+		E42207890E084994962AC81A /* /Users/artemi/Documents/repos/Huawei-oktober-2024/main.cpp */ = {isa = PBXBuildFile; fileRef = C26FAC98A2254CFE8B71DACA /* /Users/artemi/Documents/repos/Huawei-oktober-2024/main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildStyle section */
-		0A2E776ABF5E43B9B1D3ADB6 /* Debug */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Debug;
-		};
-		6745BF71E04D4920BAD94095 /* Release */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = Release;
-		};
-		B5F7DED7BE1145A48433DC3B /* RelWithDebInfo */ = {
-			isa = PBXBuildStyle;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-			};
-			name = RelWithDebInfo;
-		};
-		ECE00770A38E48D49D7F5C9C /* MinSizeRel */ = {
+		5118269AE3D84D1FBF0171FB /* MinSizeRel */ = {
 			isa = PBXBuildStyle;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 			};
 			name = MinSizeRel;
 		};
+		53E11E56524D4F62A612FB31 /* Release */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Release;
+		};
+		AF16267B16EB42F593771B92 /* RelWithDebInfo */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = RelWithDebInfo;
+		};
+		D86E74B3D210453EAAD12138 /* Debug */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Debug;
+		};
 /* End PBXBuildStyle section */
 
 /* Begin PBXContainerItemProxy section */
-		229BA4E9776B466299C2F7A8 /* PBXContainerItemProxy */ = {
+		30FB582B2E6A465C92E01AC2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B2227FADD5FF45E4A7502DE5 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = BF1F966B6C02401BBF8F099A;
 			remoteInfo = main;
 		};
-		7ADE52C97B3545078E3F5DBB /* PBXContainerItemProxy */ = {
+		8DFE40C426D64912BD9367B8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B2227FADD5FF45E4A7502DE5 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A973C19B9A5247EB8C5E0E88;
 			remoteInfo = ZERO_CHECK;
 		};
-		83407C409CD94D3B87DFABC3 /* PBXContainerItemProxy */ = {
+		A3617D1F1E194C64ADB770C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B2227FADD5FF45E4A7502DE5 /* Project object */;
 			proxyType = 1;
@@ -94,14 +94,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0E62FE3283F149A59861A1AC /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		936A8A20FA82458BA98DD665 /* main */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = main; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8C25670FE34405DB8639F3D /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		F82AF8D0F4494D7EB5D80150 /* /Users/artemi/Documents/repos/Huawei-oktober-2024/main.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = main.cpp; path = main.cpp; sourceTree = SOURCE_ROOT; };
+		66A947DFAD3946ECB468EA3D /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		962254AD705B4A46A6971CE3 /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */ = {isa = PBXFileReference; explicitFileType = sourcecode.text; fileEncoding = 4; name = CMakeLists.txt; path = CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		B9FFEB0C03F647F49C7CC6BA /* main */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = main; sourceTree = BUILT_PRODUCTS_DIR; };
+		C26FAC98A2254CFE8B71DACA /* /Users/artemi/Documents/repos/Huawei-oktober-2024/main.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = main.cpp; path = main.cpp; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		A1F7E698E41743AABC21CED6 /* Frameworks */ = {
+		9CF255EBFA8346209AA21EFF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -111,62 +111,62 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		29D6E4ED8A264251B41E1B15 /* main */ = {
+		15662C64858B45B5AF2C8C82 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D43C7E7019BA4FEC998F9563 /* Source Files */,
-				D8C25670FE34405DB8639F3D /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */,
+				B9FFEB0C03F647F49C7CC6BA /* main */,
 			);
-			name = main;
+			name = Products;
 			sourceTree = "<group>";
 		};
-		2E77F59A017349AB8108448D /* CMake Rules */ = {
+		393E3258C08F4006A671BCB6 /* CMake Rules */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = "CMake Rules";
 			sourceTree = "<group>";
 		};
-		3B3C703305BA4FD58D46210C /* Products */ = {
+		483908387BB141FBA5FAE0DE /* Source Files */ = {
 			isa = PBXGroup;
 			children = (
-				936A8A20FA82458BA98DD665 /* main */,
+				C26FAC98A2254CFE8B71DACA /* /Users/artemi/Documents/repos/Huawei-oktober-2024/main.cpp */,
 			);
-			name = Products;
+			name = "Source Files";
 			sourceTree = "<group>";
 		};
-		A7794460942C48BD95073E86 /* Frameworks */ = {
+		9ED668A8EAC94BD8ABEC55BC = {
+			isa = PBXGroup;
+			children = (
+				FD1CCFEA1BB54305B93A60B2 /* main */,
+				B7BF710C7CD04AA99FC97190 /* ALL_BUILD */,
+				15662C64858B45B5AF2C8C82 /* Products */,
+				C48FB5F7E6D840CD8035F114 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		B7BF710C7CD04AA99FC97190 /* ALL_BUILD */ = {
+			isa = PBXGroup;
+			children = (
+				393E3258C08F4006A671BCB6 /* CMake Rules */,
+				66A947DFAD3946ECB468EA3D /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */,
+			);
+			name = ALL_BUILD;
+			sourceTree = "<group>";
+		};
+		C48FB5F7E6D840CD8035F114 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		A89E5F64EFD94D9FA5FB6D05 = {
+		FD1CCFEA1BB54305B93A60B2 /* main */ = {
 			isa = PBXGroup;
 			children = (
-				29D6E4ED8A264251B41E1B15 /* main */,
-				E92AB98EF2214C5CB4DAA790 /* ALL_BUILD */,
-				3B3C703305BA4FD58D46210C /* Products */,
-				A7794460942C48BD95073E86 /* Frameworks */,
+				483908387BB141FBA5FAE0DE /* Source Files */,
+				962254AD705B4A46A6971CE3 /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */,
 			);
-			sourceTree = "<group>";
-		};
-		D43C7E7019BA4FEC998F9563 /* Source Files */ = {
-			isa = PBXGroup;
-			children = (
-				F82AF8D0F4494D7EB5D80150 /* /Users/artemi/Documents/repos/Huawei-oktober-2024/main.cpp */,
-			);
-			name = "Source Files";
-			sourceTree = "<group>";
-		};
-		E92AB98EF2214C5CB4DAA790 /* ALL_BUILD */ = {
-			isa = PBXGroup;
-			children = (
-				2E77F59A017349AB8108448D /* CMake Rules */,
-				0E62FE3283F149A59861A1AC /* /Users/artemi/Documents/repos/Huawei-oktober-2024/CMakeLists.txt */,
-			);
-			name = ALL_BUILD;
+			name = main;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -174,19 +174,19 @@
 /* Begin PBXNativeTarget section */
 		BF1F966B6C02401BBF8F099A /* main */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 35B618ED2FCC46D18BCF3BF6 /* Build configuration list for PBXNativeTarget "main" */;
+			buildConfigurationList = 9B3D160EF78C4410B70CE106 /* Build configuration list for PBXNativeTarget "main" */;
 			buildPhases = (
-				76BEA8750B564F3C8BD018C3 /* Sources */,
-				A1F7E698E41743AABC21CED6 /* Frameworks */,
+				15F522F3FB2841CC8F86D533 /* Sources */,
+				9CF255EBFA8346209AA21EFF /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				84DA8BE0E920467CBAA12FAD /* PBXTargetDependency */,
+				A9DF19E79F714D4186912C04 /* PBXTargetDependency */,
 			);
 			name = main;
 			productName = main;
-			productReference = 936A8A20FA82458BA98DD665 /* main */;
+			productReference = B9FFEB0C03F647F49C7CC6BA /* main */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -198,18 +198,18 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1610;
 			};
-			buildConfigurationList = CF4250E253E54D6BB58B82A4 /* Build configuration list for PBXProject "main" */;
+			buildConfigurationList = F3099F0555264A1DB9E38D80 /* Build configuration list for PBXProject "main" */;
 			buildSettings = {
 			};
 			buildStyles = (
-				0A2E776ABF5E43B9B1D3ADB6 /* Debug */,
-				6745BF71E04D4920BAD94095 /* Release */,
-				ECE00770A38E48D49D7F5C9C /* MinSizeRel */,
-				B5F7DED7BE1145A48433DC3B /* RelWithDebInfo */,
+				D86E74B3D210453EAAD12138 /* Debug */,
+				53E11E56524D4F62A612FB31 /* Release */,
+				5118269AE3D84D1FBF0171FB /* MinSizeRel */,
+				AF16267B16EB42F593771B92 /* RelWithDebInfo */,
 			);
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 0;
-			mainGroup = A89E5F64EFD94D9FA5FB6D05;
+			mainGroup = 9ED668A8EAC94BD8ABEC55BC;
 			projectDirPath = "/Users/artemi/Documents/repos/Huawei-oktober-2024";
 			projectRoot = "";
 			targets = (
@@ -320,36 +320,36 @@ fi
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		76BEA8750B564F3C8BD018C3 /* Sources */ = {
+		15F522F3FB2841CC8F86D533 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				772732F898034924A4BC7AAD /* /Users/artemi/Documents/repos/Huawei-oktober-2024/main.cpp */,
+				E42207890E084994962AC81A /* /Users/artemi/Documents/repos/Huawei-oktober-2024/main.cpp */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		6BED386FA7B442B1A9ACC9B8 /* PBXTargetDependency */ = {
+		A9DF19E79F714D4186912C04 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A973C19B9A5247EB8C5E0E88 /* ZERO_CHECK */;
-			targetProxy = 7ADE52C97B3545078E3F5DBB /* PBXContainerItemProxy */;
+			targetProxy = 8DFE40C426D64912BD9367B8 /* PBXContainerItemProxy */;
 		};
-		84DA8BE0E920467CBAA12FAD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = A973C19B9A5247EB8C5E0E88 /* ZERO_CHECK */;
-			targetProxy = 83407C409CD94D3B87DFABC3 /* PBXContainerItemProxy */;
-		};
-		D1E18E9628BD4B878FE75044 /* PBXTargetDependency */ = {
+		B02466AD0FFA4FD6B13D03EA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = BF1F966B6C02401BBF8F099A /* main */;
-			targetProxy = 229BA4E9776B466299C2F7A8 /* PBXContainerItemProxy */;
+			targetProxy = 30FB582B2E6A465C92E01AC2 /* PBXContainerItemProxy */;
+		};
+		D946F92C0C82426D96023D8F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A973C19B9A5247EB8C5E0E88 /* ZERO_CHECK */;
+			targetProxy = A3617D1F1E194C64ADB770C7 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		106150C7607749FC93F29394 /* MinSizeRel */ = {
+		0E3F495248D94BFA93C94E60 /* RelWithDebInfo */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
@@ -369,9 +369,31 @@ fi
 				USE_HEADERMAP = NO;
 				WARNING_CFLAGS = ("$(inherited)");
 			};
-			name = MinSizeRel;
+			name = RelWithDebInfo;
 		};
-		1D4FC40952E14BA5AFC1224C /* MinSizeRel */ = {
+		1FCC4CA8288C450DA50B313A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ZERO_CHECK;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Debug;
+		};
+		2C29DE40DC7D42748059B2E6 /* MinSizeRel */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
@@ -385,7 +407,7 @@ fi
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INSTALL_PATH = "";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG '-std=gnu++20' ";
+				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG '-std=gnu++2b' ";
 				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","$(inherited)");
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = main;
@@ -396,16 +418,82 @@ fi
 			};
 			name = MinSizeRel;
 		};
-		26264BD3D24B449BAFFCBF00 /* MinSizeRel */ = {
+		2FC65C37856C49F48E5FC715 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
 				SDKROOT = "";
 				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/build";
 			};
+			name = Release;
+		};
+		38ADC3D3EDB14FF19A242947 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Release;
+		};
+		515C2FF4E9C04B59B25E3ECD /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
 			name = MinSizeRel;
 		};
-		4249C853779B48A78E90A030 /* Release */ = {
+		5B6E6F72A0504E4A99A7205D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INSTALL_PATH = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = ALL_BUILD;
+				SECTORDER_FLAGS = "";
+				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode";
+				USE_HEADERMAP = NO;
+				WARNING_CFLAGS = ("$(inherited)");
+			};
+			name = Debug;
+		};
+		5BE1BF5194F746D6902DBA3B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
@@ -419,7 +507,7 @@ fi
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INSTALL_PATH = "";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG '-std=gnu++20' ";
+				OTHER_CPLUSPLUSFLAGS = "    -DNDEBUG '-std=gnu++2b' ";
 				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","$(inherited)");
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = main;
@@ -430,103 +518,7 @@ fi
 			};
 			name = Release;
 		};
-		5046E915315D4FBF927D2CF2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				COMBINE_HIDPI_IMAGES = YES;
-				EXECUTABLE_PREFIX = "";
-				EXECUTABLE_SUFFIX = "";
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CPLUSPLUSFLAGS = "   '-std=gnu++20' ";
-				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","$(inherited)");
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = main;
-				SECTORDER_FLAGS = "";
-				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode";
-				USE_HEADERMAP = NO;
-				WARNING_CFLAGS = ("$(inherited)");
-			};
-			name = Debug;
-		};
-		5FEAA4E9565B42C2A039AEFD /* RelWithDebInfo */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				SDKROOT = "";
-				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/build";
-			};
-			name = RelWithDebInfo;
-		};
-		7FC913E40B2A44E3A2EAE971 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				SDKROOT = "";
-				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/build";
-			};
-			name = Release;
-		};
-		8F71FD4FBA0243DA86A7F1DB /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = ("","$(inherited)");
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = ALL_BUILD;
-				SECTORDER_FLAGS = "";
-				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode";
-				USE_HEADERMAP = NO;
-				WARNING_CFLAGS = ("$(inherited)");
-			};
-			name = Release;
-		};
-		908A1E1359AE4F309FDCD947 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				SDKROOT = "";
-				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/build";
-			};
-			name = Debug;
-		};
-		9F4615E13923418FA700202E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = ("","$(inherited)");
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = ZERO_CHECK;
-				SECTORDER_FLAGS = "";
-				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode";
-				USE_HEADERMAP = NO;
-				WARNING_CFLAGS = ("$(inherited)");
-			};
-			name = Debug;
-		};
-		CF0EFBB37E3E4119AFD2C616 /* MinSizeRel */ = {
+		5D390130E8F143D6AC2E8F00 /* MinSizeRel */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
@@ -548,11 +540,22 @@ fi
 			};
 			name = MinSizeRel;
 		};
-		D49856AF377445AB83FB4B4A /* Debug */ = {
+		6C02FD076D5C4BDD8C329E23 /* RelWithDebInfo */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				SDKROOT = "";
+				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/build";
+			};
+			name = RelWithDebInfo;
+		};
+		72FC8CD891694C95B9A91E93 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
 				COMBINE_HIDPI_IMAGES = YES;
+				EXECUTABLE_PREFIX = "";
+				EXECUTABLE_SUFFIX = "";
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -560,9 +563,10 @@ fi
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INSTALL_PATH = "";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = ("","$(inherited)");
+				OTHER_CPLUSPLUSFLAGS = "   '-std=gnu++2b' ";
+				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","$(inherited)");
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = ALL_BUILD;
+				PRODUCT_NAME = main;
 				SECTORDER_FLAGS = "";
 				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode";
 				USE_HEADERMAP = NO;
@@ -570,7 +574,16 @@ fi
 			};
 			name = Debug;
 		};
-		DDBF5533CFEF424B8DE68E69 /* RelWithDebInfo */ = {
+		7FF9943F8F294A188B30A88D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				SDKROOT = "";
+				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/build";
+			};
+			name = Debug;
+		};
+		9DE0F568FD4F4913B7A9113A /* RelWithDebInfo */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
@@ -584,7 +597,7 @@ fi
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = ("","$(inherited)");
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = ALL_BUILD;
+				PRODUCT_NAME = ZERO_CHECK;
 				SECTORDER_FLAGS = "";
 				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode";
 				USE_HEADERMAP = NO;
@@ -592,7 +605,7 @@ fi
 			};
 			name = RelWithDebInfo;
 		};
-		F2E14EC4E56D4EB2AADCDAC7 /* Release */ = {
+		A34C3DE27F3A43F8884D33EB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
@@ -614,7 +627,16 @@ fi
 			};
 			name = Release;
 		};
-		F4EE06C188C543B3A41657CE /* RelWithDebInfo */ = {
+		A824AC82ED5446C9A359582F /* MinSizeRel */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				SDKROOT = "";
+				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/build";
+			};
+			name = MinSizeRel;
+		};
+		FFD122E07C10496E8E96E7A0 /* RelWithDebInfo */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
@@ -628,7 +650,7 @@ fi
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INSTALL_PATH = "";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_CPLUSPLUSFLAGS = "       -DNDEBUG '-std=gnu++20' ";
+				OTHER_CPLUSPLUSFLAGS = "       -DNDEBUG '-std=gnu++2b' ";
 				OTHER_LDFLAGS = (" -Wl,-search_paths_first -Wl,-headerpad_max_install_names","$(inherited)");
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = main;
@@ -639,71 +661,49 @@ fi
 			};
 			name = RelWithDebInfo;
 		};
-		FC414A686F22453984B8E156 /* RelWithDebInfo */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				COMBINE_HIDPI_IMAGES = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = ("'CMAKE_INTDIR=\"$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)\"'","$(inherited)");
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INSTALL_PATH = "";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = ("","$(inherited)");
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = ZERO_CHECK;
-				SECTORDER_FLAGS = "";
-				SYMROOT = "/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode";
-				USE_HEADERMAP = NO;
-				WARNING_CFLAGS = ("$(inherited)");
-			};
-			name = RelWithDebInfo;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		35B618ED2FCC46D18BCF3BF6 /* Build configuration list for PBXNativeTarget "main" */ = {
+		409CD1B8F30E4E98B9DDF686 /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				5046E915315D4FBF927D2CF2 /* Debug */,
-				4249C853779B48A78E90A030 /* Release */,
-				1D4FC40952E14BA5AFC1224C /* MinSizeRel */,
-				F4EE06C188C543B3A41657CE /* RelWithDebInfo */,
+				1FCC4CA8288C450DA50B313A /* Debug */,
+				A34C3DE27F3A43F8884D33EB /* Release */,
+				5D390130E8F143D6AC2E8F00 /* MinSizeRel */,
+				9DE0F568FD4F4913B7A9113A /* RelWithDebInfo */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		52A21EFA8918439A889780BC /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */ = {
+		860EBD7D929E443385A54B77 /* Build configuration list for PBXAggregateTarget "ALL_BUILD" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				D49856AF377445AB83FB4B4A /* Debug */,
-				8F71FD4FBA0243DA86A7F1DB /* Release */,
-				106150C7607749FC93F29394 /* MinSizeRel */,
-				DDBF5533CFEF424B8DE68E69 /* RelWithDebInfo */,
+				5B6E6F72A0504E4A99A7205D /* Debug */,
+				38ADC3D3EDB14FF19A242947 /* Release */,
+				515C2FF4E9C04B59B25E3ECD /* MinSizeRel */,
+				0E3F495248D94BFA93C94E60 /* RelWithDebInfo */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		CF4250E253E54D6BB58B82A4 /* Build configuration list for PBXProject "main" */ = {
+		9B3D160EF78C4410B70CE106 /* Build configuration list for PBXNativeTarget "main" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				908A1E1359AE4F309FDCD947 /* Debug */,
-				7FC913E40B2A44E3A2EAE971 /* Release */,
-				26264BD3D24B449BAFFCBF00 /* MinSizeRel */,
-				5FEAA4E9565B42C2A039AEFD /* RelWithDebInfo */,
+				72FC8CD891694C95B9A91E93 /* Debug */,
+				5BE1BF5194F746D6902DBA3B /* Release */,
+				2C29DE40DC7D42748059B2E6 /* MinSizeRel */,
+				FFD122E07C10496E8E96E7A0 /* RelWithDebInfo */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		FDED9FE9A1B84CFC8D5E97FA /* Build configuration list for PBXAggregateTarget "ZERO_CHECK" */ = {
+		F3099F0555264A1DB9E38D80 /* Build configuration list for PBXProject "main" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9F4615E13923418FA700202E /* Debug */,
-				F2E14EC4E56D4EB2AADCDAC7 /* Release */,
-				CF0EFBB37E3E4119AFD2C616 /* MinSizeRel */,
-				FC414A686F22453984B8E156 /* RelWithDebInfo */,
+				7FF9943F8F294A188B30A88D /* Debug */,
+				2FC65C37856C49F48E5FC715 /* Release */,
+				A824AC82ED5446C9A359582F /* MinSizeRel */,
+				6C02FD076D5C4BDD8C329E23 /* RelWithDebInfo */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

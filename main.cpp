@@ -143,7 +143,7 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
     }
     ve<ve<int> > nfaces;
     for(int i = 0; i < faces.size(); i++)
-        if(!del[i])
+        if(!del[ds.get(faces[i][0])])
             nfaces.push_back(faces[i]);
     faces.swap(nfaces);
 
