@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
-
 #define ve vector
-#define ld long double
+#define ll long long
 
 using namespace std;
 
@@ -10,20 +9,20 @@ using pii = pair<int, int>;
 const int MAXN = 1e6+10;
 
 struct Point {
-    ld x, y;
+    ll x, y;
 
     Point() {}
-    Point(ld x_, ld y_): x(x_), y(y_) {}
+    Point(ll x_, ll y_): x(x_), y(y_) {}
 
     Point operator - (const Point & p) const {
         return Point(x - p.x, y - p.y);
     }
 
-    ld cross (const Point & p) const {
-        return x * p.y - y * p.x;
+    __int128 cross (const Point & p) const {
+        return (__int128)x * p.y - (__int128)y * p.x;
     }
 
-    ld cross (const Point & p, const Point & q) const {
+    __int128 cross (const Point & p, const Point & q) const {
         return (p - *this).cross(q - *this);
     }
 
@@ -32,10 +31,10 @@ struct Point {
     }
 };
 
-const ld eps = 1e-16;
-bool le(const ld& a, const ld& b) { return a <= b; }
-bool eq(const ld& a, const ld& b) { return abs(a - b) <= eps; }
-int sgn(const ld& x) { return eq(x, 0) ? 0 : le(x, 0) ? -1 : 1; }
+#define le(a, b) (a <= b)
+#define eq(a, b) (a == b)
+
+int sgn(const __int128& x) { return eq(x, 0) ? 0 : le(x, 0) ? -1 : 1; }
 
 
 struct edge {
@@ -51,12 +50,12 @@ struct edge {
 
 struct event{
     int type; //-1 — del, 0 — get, 1 - add
-    ld x;
+    ll x;
     edge e;
 };
 
 inline bool operator <(const event& e1, const event& e2){
-    if(abs(e1.x - e2.x) > eps)
+    if(!eq(e1.x, e2.x))
         return e1.x < e2.x;
     if(abs(e1.type) != abs(e2.type))
         return abs(e1.type) < abs(e2.type);
@@ -182,7 +181,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
             // cout << pl.cross(pr);
             if (pl.half() != pr.half())
                 return pl.half() < pr.half();
-            return pl.cross(pr) > eps;
+            return pl.cross(pr) > 0;
         };
         sort(adj[i].begin(), adj[i].end(), compare);
     }
@@ -204,7 +203,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
                     Point pr = vertices[r] - vertices[u];
                     if (pl.half() != pr.half())
                         return pl.half() < pr.half();
-                    return pl.cross(pr) > eps;
+                    return pl.cross(pr) > 0;
                 }) - adj[u].begin() + 1;
                 if (e1 == adj[u].size()) {
                     e1 = 0;
@@ -216,7 +215,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
             reverse(face.begin(), face.end());
             int sign = 0;
             Point p1 = vertices[face[0]];
-            ld sum = 0;
+            __int128 sum = 0;
             for (int i = 0; i < face.size(); ++i) {
                 Point p2 = vertices[face[i]];
                 Point p3 = vertices[face[(i + 1) % face.size()]];
@@ -229,10 +228,17 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
     return faces;
 }
 
-ld readlds(){
+ll readlds(){
     string st;
     cin >> st;
-    return stold(st);
+    size_t pos = st.find(".");
+    if(pos == -1)
+        pos = st.size();
+    else st.erase(pos, 1);
+    while(st.size() - pos < 15)
+        st.push_back('0');
+    
+    return stoll(st);
 }
 
 int realids[MAXN];
@@ -265,8 +271,9 @@ void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& 
             st.erase(e);
         }
         else{
-            auto it = st.lower_bound(e);
-            assert(it != st.begin());
+            auto it = st.upper_bound(e);
+//            if(it == st.begin()) continue;
+//            assert(it != st.begin());
             it--;
             cnt[it->up]++;
         }
@@ -304,7 +311,7 @@ const int L = 512, R = 1024;
 
 
 int main(){
-    assert(freopen("small_Minsk.txt", "r", stdin));
+//    assert(freopen("small_Minsk.txt", "r", stdin));
     int n;
     cin >> n;
     ve<Point> pts(n);
@@ -319,13 +326,20 @@ int main(){
     ve<ve<int> > g(n);
     int m;
     cin >> m;
+    ve<pii> es;
     for(int i = 0; i < m; i++){
         int a, b;
         cin >> a >> b;
         a = realids[a]; b = realids[b];
+        es.push_back({a, b});
+    }
+    sort(es.begin(), es.end());
+    es.erase(unique(es.begin(), es.end()), es.end());
+    for(auto [a, b] : es){
         g[a].push_back(b);
         g[b].push_back(a);
     }
+        
     ve<ve<int> > faces = find_faces(pts, g, 0);
     delete_inner(pts, faces);
     int z = faces.size();
