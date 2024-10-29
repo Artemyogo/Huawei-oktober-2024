@@ -59,7 +59,9 @@ inline bool operator <(const event& e1, const event& e2){
         return e1.x < e2.x;
     if(abs(e1.type) != abs(e2.type))
         return abs(e1.type) < abs(e2.type);
-    else return e1.type < e2.type;
+    else if(e1.type != e2.type)
+        return e1.type < e2.type;
+    else return e1.e.up < e2.e.up;
 }
 
 
@@ -135,8 +137,9 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
             while(prv != st.begin() && del[abs(prv->up) - 1]){
                 prv = prev(st.erase(prv));
             }
-            if(it->up > 0 && prv->up > 0)
+            if(it->up > 0 && prv->up > 0){
                 del[abs(it->up) - 1] = 1;
+            }
         }
         else if(tp == -1)
             st.erase(e);
@@ -272,7 +275,8 @@ void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& 
         }
         else{
             auto it = st.upper_bound(e);
-//            if(it == st.begin()) continue;
+            if(it == st.begin()){cout << "!"; continue;
+            }
 //            assert(it != st.begin());
             it--;
             cnt[it->up]++;
