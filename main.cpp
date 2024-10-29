@@ -331,7 +331,7 @@ int main(){
         int a, b;
         cin >> a >> b;
         a = realids[a]; b = realids[b];
-        es.push_back({a, b});
+        es.push_back(minmax(a, b));
     }
     sort(es.begin(), es.end());
     es.erase(unique(es.begin(), es.end()), es.end());
