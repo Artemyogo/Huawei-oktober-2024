@@ -1,3 +1,5 @@
 /Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/CMakeFiles/main.dir
+/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/CMakeFiles/generator.dir
+/Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/CMakeFiles/stress.dir
 /Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/CMakeFiles/ALL_BUILD.dir
 /Users/artemi/Documents/repos/Huawei-oktober-2024/xcode/CMakeFiles/ZERO_CHECK.dir

@@ -1,0 +1,4 @@
+Target dependency graph (2 targets)
+Target 'generator' in project 'stress'
+➜ Explicit dependency on target 'ZERO_CHECK' in project 'stress'
+Target 'ZERO_CHECK' in project 'stress' (no dependencies)

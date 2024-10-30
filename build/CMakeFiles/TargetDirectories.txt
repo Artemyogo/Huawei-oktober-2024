@@ -1,3 +1,5 @@
 /Users/artemi/Documents/repos/Huawei-oktober-2024/build/CMakeFiles/main.dir
+/Users/artemi/Documents/repos/Huawei-oktober-2024/build/CMakeFiles/generator.dir
+/Users/artemi/Documents/repos/Huawei-oktober-2024/build/CMakeFiles/stress.dir
 /Users/artemi/Documents/repos/Huawei-oktober-2024/build/CMakeFiles/edit_cache.dir
 /Users/artemi/Documents/repos/Huawei-oktober-2024/build/CMakeFiles/rebuild_cache.dir

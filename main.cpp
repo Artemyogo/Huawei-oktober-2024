@@ -116,8 +116,8 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
     sort(ces.begin(), ces.end());
     for(int it = 0; it < ces.size(); it++){
         if((it == 0 || ces[it - 1].fi != ces[it].fi) && (it == ces.size() - 1 || ces[it + 1].fi != ces[it].fi)){
-            auto [prev, i] = ces[it].fi;
-            if(ces[it].se.se)
+            auto [i, prev] = ces[it].fi;
+            if(!ces[it].se.se)
                 swap(prev, i);
             if(p[prev].x < p[i].x){
                 es.push_back({1, p[prev].x, edge(p[prev], p[i], ces[it].se.fi + 1)});
@@ -288,15 +288,18 @@ void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& 
     for(int i = 0; i < es.size(); i++){
         auto [t, x, e] = es[i];
         if(t == 1){
+            int prevsz = st.size();
             st.insert(e);
+            assert(st.size() == prevsz + 1);
         }
         else if(t == -1){
             st.erase(e);
         }
         else{
             auto it = st.upper_bound(e);
-//            if(it == st.begin()){cout << "!"; continue;
-//            }
+            if(it == st.begin()){cout << "!"; continue;
+                assert(!st.empty());
+            }
 //            assert(it != st.begin());
             it--;
             cnt[it->up]++;
@@ -335,7 +338,7 @@ const int L = 512, R = 1024;
 
 
 int main(){
-//    assert(freopen("small_Minsk.txt", "r", stdin));
+//    assert(freopen("../../graph_data.txt", "r", stdin));
     int n;
     cin >> n;
     ve<Point> pts(n);
@@ -382,6 +385,7 @@ int main(){
     dsu d(z);
     vector<int> cur_cnt(z);
     int iter = 0;
+    return 0;
     while (true) { // this part sucks
         shuffle(edges.begin(), edges.end(), rng);
         d.clear();

@@ -1,16 +1,10 @@
-
 #include <bits/stdc++.h>
-#include "generator.hpp"
-
-namespace gen{
 
 using dbl = long double;
-
 const dbl eps = 1e-9;
 
 struct Point {
     dbl x, y;
-    
     Point(){}
     Point(dbl x_, dbl y_): x(x_), y(y_) {}
     
@@ -186,19 +180,38 @@ std::pair<std::vector<Point>, std::vector<std::pair<int, int> > > build_graph(st
 }
 
 
-mt19937_64 rng;
+mt19937_64 rnd;
+
 #define ll long long
 
-std::pair<std::vector<Point>, std::vector<std::pair<int, int> > > generate(int n, int m){
+using namespace std;
+
+int main(int argc, char* argv[]){
+    int n = atoi(argv[1]);
+    int m = atoi(argv[2]);
     std:vector<Point> pts(n);
     for(auto& i : pts){
-        i.x = (dbl)(rng() % (ll)1e17)/1e15;
-        i.y = (dbl)(rng() % (ll)1e17)/1e15;
+        i.x = (dbl)(rnd() % (ll)1e17)/1e15;
+        i.y = (dbl)(rnd() % (ll)1e17)/1e15;
     }
-    
-    
+    vector<Line> es;
+    for(int i = 0; i < m; i++){
+        int u = rnd() % n;
+        int v = rnd() % n;
+        while(u == v) v = rnd() % n;
+        es.push_back(Line(pts[u], pts[v]));
+    }
+    auto [resp, reses] = build_graph(es);
+    cout << resp.size() << "\n";
+    for(int i = 0; i < resp.size(); i++){
+        cout << i << fixed << setprecision(15)  << " " << resp[i].x << " " << resp[i].y << "\n";
+    }
+    cout << reses.size() << "\n";
+    for(auto [a, b] : reses)
+        cout << a << " " << b << "\n";
+    cout << "0\n";
     
 }
-
-
-}
+    
+    
+    
