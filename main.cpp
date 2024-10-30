@@ -54,17 +54,6 @@ struct event{
     edge e;
 };
 
-inline bool operator <(const event& e1, const event& e2){
-    if(!eq(e1.x, e2.x))
-        return e1.x < e2.x;
-    if(abs(e1.type) != abs(e2.type))
-        return abs(e1.type) < abs(e2.type);
-    else if(e1.type != e2.type)
-        return e1.type < e2.type;
-    else return e1.e.up < e2.e.up;
-}
-
-
 inline bool edge_cmp(const edge& e1, const edge&e2){
     Point a = e1.l, b = e1.r;
     Point c = e2.l, d = e2.r;
@@ -76,6 +65,18 @@ inline bool edge_cmp(const edge& e1, const edge&e2){
         return val < 0;
     return e1.up < e2.up;
 }
+
+inline bool operator <(const event& e1, const event& e2){
+    if(!eq(e1.x, e2.x))
+        return e1.x < e2.x;
+    if(abs(e1.type) != abs(e2.type))
+        return abs(e1.type) < abs(e2.type);
+    else if(e1.type != e2.type)
+        return e1.type < e2.type;
+    else return edge_cmp(e1.e, e2.e);
+}
+
+
 
 struct dsu {
     vector<int> p;
@@ -194,12 +195,22 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
             if (used[i][edge_id]) {
                 continue;
             }
-            vector<int> face;
+            vector<int> cface;
             int v = i;
             int e = edge_id;
+            ve<ve<int> > cfaces;
+            ve<bool> vis(n, 0);
             while (!used[v][e]) {
                 used[v][e] = true;
-                face.push_back(v);
+                cface.push_back(v);
+                if(vis[v]){
+                    cfaces.emplace_back();
+                    do{
+                        cfaces.back().push_back(cface.back());
+                        cface.pop_back();
+                    } while(cface.back() != v);
+                }
+                vis[v] = 1;
                 int u = adj[v][e];
                 int e1 = lower_bound(adj[u].begin(), adj[u].end(), v, [&](int l, int r) {
                     Point pl = vertices[l] - vertices[u];
@@ -215,17 +226,20 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
                 v = u;
                 e = e1;
             }
-            reverse(face.begin(), face.end());
-            int sign = 0;
-            Point p1 = vertices[face[0]];
-            __int128 sum = 0;
-            for (int i = 0; i < face.size(); ++i) {
-                Point p2 = vertices[face[i]];
-                Point p3 = vertices[face[(i + 1) % face.size()]];
-                sum += (p2 - p1).cross(p3 - p2);
+            reverse(cface.begin(), cface.end());
+            cfaces.push_back(cface);
+            for(auto face : cfaces){
+                int sign = 0;
+                Point p1 = vertices[face[0]];
+                __int128 sum = 0;
+                for (int i = 0; i < face.size(); ++i) {
+                    Point p2 = vertices[face[i]];
+                    Point p3 = vertices[face[(i + 1) % face.size()]];
+                    sum += (p2 - p1).cross(p3 - p2);
+                }
+                if ((!inner && sgn(sum) > 0) || (inner && sgn(sum) < 0))
+                    faces.emplace_back(face);
             }
-            if ((!inner && sgn(sum) > 0) || (inner && sgn(sum) < 0))
-                faces.emplace_back(face);
         }
     }
     return faces;
