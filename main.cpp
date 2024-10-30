@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 #define ve vector
 #define ll long long
+#define fi first
+#define se second
 
 using namespace std;
 
@@ -103,43 +105,47 @@ struct dsu {
 void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
     int n = p.size();
     ve<event> es;
-    dsu ds(n);
-    for(auto f : faces){
-        ds.unite(f.front(), f.back());
-        for(int i = 1; i < f.size(); i++)
-            ds.unite(f[i], f[i - 1]);
-    }
-    
+    dsu ds(faces.size());
+    ve<pair<pii, pii> > ces;
     for(int it = 0; it < faces.size(); it++){
-        ve<int> &f = faces[it];
-        int prev = f.back();
-        
-        for(auto i : f){
+        auto &f = faces[it];
+        ces.push_back({minmax(f.front(), f.back()), {it, f.front() < f.back()}});
+        for(int i = 1; i < f.size(); i++)
+            ces.push_back({minmax(f[i], f[i - 1]), {it, f[i] < f[i - 1]}});
+    }
+    sort(ces.begin(), ces.end());
+    for(int it = 0; it < ces.size(); it++){
+        if((it == 0 || ces[it - 1].fi != ces[it].fi) && (it == ces.size() - 1 || ces[it + 1].fi != ces[it].fi)){
+            auto [prev, i] = ces[it].fi;
+            if(ces[it].se.se)
+                swap(prev, i);
             if(p[prev].x < p[i].x){
-                es.push_back({1, p[prev].x, edge(p[prev], p[i], ds.get(i) + 1)});
-                es.push_back({-1, p[i].x, edge(p[prev], p[i], ds.get(i) + 1)});
+                es.push_back({1, p[prev].x, edge(p[prev], p[i], ces[it].se.fi + 1)});
+                es.push_back({-1, p[i].x, edge(p[prev], p[i], ces[it].se.fi + 1)});
             }
             else if(p[prev].x > p[i].x){
-                es.push_back({-1, p[prev].x, edge(p[i], p[prev], -ds.get(i) - 1)});
-                es.push_back({1, p[i].x, edge( p[i], p[prev], -ds.get(i) - 1)});
+                es.push_back({-1, p[prev].x, edge(p[i], p[prev], -ces[it].se.fi - 1)});
+                es.push_back({1, p[i].x, edge( p[i], p[prev], -ces[it].se.fi - 1)});
             }
-            prev = i;
+        }
+        else if(it == ces.size() - 1 || ces[it + 1].fi != ces[it].fi){
+            ds.unite(ces[it].se.fi, ces[it - 1].se.fi);
         }
     }
     sort(es.begin(), es.end());
-    ve<bool> del(n);
+    ve<bool> del(faces.size());
     set<edge, decltype(*edge_cmp)> st(edge_cmp);
     for(auto [tp, x, e] : es){
-        if(del[abs(e.up) - 1]) continue;
+        if(del[ds.get(abs(e.up) - 1)]) continue;
         if(tp == 1){
             auto it = st.insert(e).first;
             if(it == st.begin()) continue;
             auto prv = prev(it);
-            while(prv != st.begin() && del[abs(prv->up) - 1]){
+            while(prv != st.begin() && del[ds.get(abs(prv->up) - 1)]){
                 prv = prev(st.erase(prv));
             }
-            if(it->up > 0 && prv->up > 0){
-                del[abs(it->up) - 1] = 1;
+            if(it->up > 0 && !del[ds.get(abs(prv->up) - 1)] && prv->up > 0){
+                del[ds.get(abs(it->up) - 1)] = 1;
             }
         }
         else if(tp == -1)
@@ -147,7 +153,7 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
     }
     ve<ve<int> > nfaces;
     for(int i = 0; i < faces.size(); i++)
-        if(!del[ds.get(faces[i][0])])
+        if(!del[ds.get(i)])
             nfaces.push_back(faces[i]);
     faces.swap(nfaces);
 
@@ -289,8 +295,8 @@ void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& 
         }
         else{
             auto it = st.upper_bound(e);
-            if(it == st.begin()){cout << "!"; continue;
-            }
+//            if(it == st.begin()){cout << "!"; continue;
+//            }
 //            assert(it != st.begin());
             it--;
             cnt[it->up]++;
