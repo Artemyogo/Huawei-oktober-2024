@@ -12,22 +12,22 @@ const int MAXN = 1e6+10;
 
 struct Point {
     ll x, y;
-
+    
     Point() {}
     Point(ll x_, ll y_): x(x_), y(y_) {}
-
+    
     Point operator - (const Point & p) const {
         return Point(x - p.x, y - p.y);
     }
-
+    
     __int128 cross (const Point & p) const {
         return (__int128)x * p.y - (__int128)y * p.x;
     }
-
+    
     __int128 cross (const Point & p, const Point & q) const {
         return (p - *this).cross(q - *this);
     }
-
+    
     int half () const {
         return int(y < 0 || (y == 0 && x < 0));
     }
@@ -136,8 +136,8 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
     ve<bool> del(faces.size());
     set<edge, decltype(*edge_cmp)> st(edge_cmp);
     for(auto [tp, x, e] : es){
-        if(del[ds.get(abs(e.up) - 1)]) continue;
         if(tp == 1){
+            if(del[ds.get(abs(e.up) - 1)]) continue;
             auto it = st.insert(e).first;
             if(it == st.begin()) continue;
             auto prv = prev(it);
@@ -149,14 +149,15 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
             }
         }
         else if(tp == -1)
-            st.erase(e);
+            if(st.find(e) != st.end())
+                st.erase(e);
     }
     ve<ve<int> > nfaces;
     for(int i = 0; i < faces.size(); i++)
         if(!del[ds.get(i)])
             nfaces.push_back(faces[i]);
     faces.swap(nfaces);
-
+    
 }
 
 vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, bool inner) {
@@ -170,6 +171,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
     }
     for (int pt = 0; pt < bfs.size(); ++pt) {
         int u = bfs[pt];
+        if(adj[u].empty()) continue;
         int v = adj[u][0];
         adj[u].clear();
         for (auto &x : adj[v]) {
@@ -297,10 +299,11 @@ void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& 
         }
         else{
             auto it = st.upper_bound(e);
-            if(it == st.begin()){cout << "!"; continue;
-                assert(!st.empty());
-            }
-//            assert(it != st.begin());
+            //                if(it == st.begin()){
+            //                    cout << e.l.x << " " << e.l.y   ; continue;
+            //                    assert(!st.empty());
+            //                }
+            assert(it != st.begin());
             it--;
             cnt[it->up]++;
         }
@@ -338,7 +341,7 @@ const int L = 512, R = 1024;
 
 
 int main(){
-//    assert(freopen("../../graph_data.txt", "r", stdin));
+    //    assert(freopen("../..//graphs/graph_data39.txt", "r", stdin));
     int n;
     cin >> n;
     ve<Point> pts(n);
@@ -366,7 +369,7 @@ int main(){
         g[a].push_back(b);
         g[b].push_back(a);
     }
-        
+    
     ve<ve<int> > faces = find_faces(pts, g, 0);
     delete_inner(pts, faces);
     int z = faces.size();
@@ -385,7 +388,6 @@ int main(){
     dsu d(z);
     vector<int> cur_cnt(z);
     int iter = 0;
-    return 0;
     while (true) { // this part sucks
         shuffle(edges.begin(), edges.end(), rng);
         d.clear();
@@ -441,8 +443,8 @@ int main(){
             }
             break;
         }
-//        cout << iter++ << ": " << mn << ", " << mx << "\n";
+        //        cout << iter++ << ": " << mn << ", " << mx << "\n";
     }
-//    cout << "yay\n";
+    //    cout << "yay\n";
     return 0;
 }

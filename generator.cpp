@@ -57,6 +57,9 @@ struct Point {
     }
 };
 
+bool eq(dbl x, dbl y) {return abs(x - y) < eps; }
+int sgn(const dbl& x) { return eq(x, 0) ? 0 : x <= 0 ? -1 : 1; }
+
 struct Line{
     Point p[2];
     
@@ -180,36 +183,171 @@ std::pair<std::vector<Point>, std::vector<std::pair<int, int> > > build_graph(st
 }
 
 
-mt19937_64 rnd;
+//mt19937_64 rnd(chrono::steady_clock::now().time_since_epoch().count());
 
 #define ll long long
 
 using namespace std;
 
+struct edge {
+    Point l, r;
+    int up;
+    edge() {}
+    edge(Point a, Point b, int sw){
+        l = a;
+        r = b;
+        up = sw;
+    }
+};
+
+inline bool edge_cmp(const edge& e1, const edge&e2){
+    Point a = e1.l, b = e1.r;
+    Point c = e2.l, d = e2.r;
+    int val = sgn(a.cross(b, c)) + sgn(a.cross(b, d));
+    if (val != 0)
+        return val > 0;
+    val = sgn(c.cross(d, a)) + sgn(c.cross(d, b));
+    return val < 0;
+}
+
+
+
+struct event{
+    int type; //-1 — del, 0 — get, 1 - add
+    dbl x;
+    edge e;
+};
+
+inline bool operator <(const event& e1, const event& e2){
+    if(!eq(e1.x, e2.x))
+        return e1.x < e2.x;
+    if(abs(e1.type) != abs(e2.type))
+        return abs(e1.type) < abs(e2.type);
+    else if(e1.type != e2.type)
+        return e1.type < e2.type;
+    else return edge_cmp(e1.e, e2.e);
+}
+
+
+void dfs(int v, int p, vector<vector<int> >& g, vector<bool>& used, vector<int>& tin, vector<int>& tout, vector<int>& fup, int& timer, map<pair<int, int>, bool>& del) {
+    used[v] = true;
+    tin[v] = fup[v] = timer++;
+    for (size_t i=0; i<g[v].size(); ++i) {
+        int to = g[v][i];
+        if (to == p)  continue;
+        if (used[to])
+            fup[v] = min (fup[v], tin[to]);
+        else {
+            dfs(to, v, g, used, tin, tout, fup, timer, del);
+            fup[v] = min (fup[v], fup[to]);
+            if (fup[to] > tin[v])
+                del[{v, to}] = del[{to, v}] = 1;
+        }
+    }
+}
+
+
+
+void point_location(const vector<Point>& p, vector<pair<int, int> > adj, vector<Point>& users){
+    {
+        vector<vector<int> > g(p.size());
+        for(auto [a, b] : adj){
+            g[a].push_back(b);
+            g[b].push_back(a);
+        }
+        map<pair<int, int>, bool> del;
+        vector<pair<int, int> > nadj;
+        vector<bool> used(p.size());
+        vector<int> tin(p.size(), 0), tout(p.size(), 0), fup(p.size(), 0);
+        int timer = 0;
+        for(int i = 0; i < g.size(); i++)
+            if(!used[i])
+                dfs(i, -1, g, used, tin, tout, fup, timer, del);
+        for(auto [a, b] : adj)
+            if(!del[{a, b}])
+                nadj.push_back({a, b});
+        adj.swap(nadj);
+    }
+    vector<event> es;
+    for(auto [a, b] : adj){
+        if(p[a].x > p[b].x) swap(a, b);
+        if(eq(p[a].x, p[b].x)) continue;
+        es.push_back({1, p[a].x, edge(p[a], p[b], 0)});
+        es.push_back({-1, p[b].x, edge(p[a], p[b], 0)});
+    }
+    for(int i = 0; i < users.size(); i++)
+        es.push_back({0, users[i].x, edge(users[i], users[i], i)});
+    sort(es.begin(), es.end());
+    set<edge, decltype(*edge_cmp)> st(edge_cmp);
+    vector<Point> res;
+    for(auto [t, x, e] : es){
+        if(t == 1)
+            st.insert(e);
+        else if(t == -1)
+            st.erase(e);
+        else{
+            auto it = st.lower_bound(e);
+            if(st.find(e) != st.end() || it == st.begin() || it == st.end()) continue;
+            res.push_back(users[e.up]);
+        }
+    }
+    users.swap(res);
+}
+
 int main(int argc, char* argv[]){
     int n = atoi(argv[1]);
     int m = atoi(argv[2]);
+    int t = atoi(argv[3]);
+    mt19937_64 rnd(atoi(argv[4]));
     std:vector<Point> pts(n);
+    map<pair<dbl, dbl>, bool> cvis;
     for(auto& i : pts){
-        i.x = (dbl)(rnd() % (ll)1e17)/1e15;
-        i.y = (dbl)(rnd() % (ll)1e17)/1e15;
+        do{
+            i.x = (dbl)(rnd() % (ll)10000)/1000;
+            i.y = (dbl)(rnd() % (ll)10000)/1000;
+        } while(cvis[{i.x, i.y}]);
+        cvis[{i.x, i.y}] = 1;
     }
     vector<Line> es;
+    map<pair<int, int>, bool> vis;
     for(int i = 0; i < m; i++){
         int u = rnd() % n;
         int v = rnd() % n;
         while(u == v) v = rnd() % n;
+        if(vis[{u, v}]) continue;
+        vis[{u, v}] = vis[{v, u}] = 1;
         es.push_back(Line(pts[u], pts[v]));
     }
+    ofstream fout((string("../graphs/graph_data") + argv[4] + ".txt").c_str());
     auto [resp, reses] = build_graph(es);
     cout << resp.size() << "\n";
+    fout << resp.size() << "\n";
+
     for(int i = 0; i < resp.size(); i++){
         cout << i << fixed << setprecision(15)  << " " << resp[i].x << " " << resp[i].y << "\n";
+        fout << i << fixed << setprecision(15)  << " " << resp[i].x << " " << resp[i].y << "\n";
+
     }
     cout << reses.size() << "\n";
-    for(auto [a, b] : reses)
+    fout << reses.size() << "\n";
+    for(auto [a, b] : reses){
         cout << a << " " << b << "\n";
-    cout << "0\n";
+        fout << a << " " << b << "\n";
+    }
+    vector<Point> users(t);
+    for(auto& i : users){
+        i.x = (dbl)(rnd() % (ll)100)/10;
+        i.y = (dbl)(rnd() % (ll)100)/10;
+    }
+    point_location(resp, reses, users);
+    cout << users.size() << "\n";
+    fout << users.size() << "\n";
+
+    for(int i = 0; i < users.size(); i++){
+        cout << i << " " << users[i].x << " " << users[i].y << "\n";
+        fout << i << " " << users[i].x << " " << users[i].y << "\n";
+    }
+    fout.close();
     
 }
     
