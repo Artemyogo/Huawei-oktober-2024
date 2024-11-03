@@ -207,7 +207,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
             int v = i;
             int e = edge_id;
             ve<ve<int> > cfaces;
-            ve<bool> vis(n, 0);
+            map<int, bool> vis;
             while (!used[v][e]) {
                 used[v][e] = true;
                 cface.push_back(v);
@@ -268,9 +268,10 @@ ll readlds(){
 
 int realids[MAXN];
 int inputids[MAXN];
+int realuserids[MAXN];
 
 
-void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& users){
+void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& users, ve<ve<int> >& who){
     ve<event> es;
     for(int it = 0; it < faces.size(); it++){
         ve<int> &f = faces[it];
@@ -283,8 +284,10 @@ void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& 
             prev = i;
         }
     }
-    for(auto i : users)
-        es.push_back({0, i.x, edge(i, i, 0)});
+    for(int it = 0; it < users.size(); it++){
+        auto &i = users[it];
+        es.push_back({0, i.x, edge(i, i, it)});
+    }
     sort(es.begin(), es.end());
     set<edge, decltype(*edge_cmp)> st(edge_cmp);
     for(int i = 0; i < es.size(); i++){
@@ -306,6 +309,7 @@ void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& 
             assert(it != st.begin());
             it--;
             cnt[it->up]++;
+            who[it->up].push_back(e.up);
         }
     }
 }
@@ -341,7 +345,7 @@ const int L = 512, R = 1024;
 
 
 int main(){
-    //    assert(freopen("../..//graphs/graph_data39.txt", "r", stdin));
+//        assert(freopen("small_Minsk.txt", "r", stdin));
     int n;
     cin >> n;
     ve<Point> pts(n);
@@ -376,14 +380,17 @@ int main(){
     int t;
     cin >> t;
     ve<Point> users(t);
-    for(auto& i : users){
+    for(int it = 0; it < t; it++){
+        auto &i = users[it];
         int id;
         cin >> id;
+        realuserids[it] = id;
         i.x = readlds();
         i.y = readlds();
     }
     ve<int> cnt(faces.size(), 0);
-    scanline(pts, faces, cnt, users);
+    ve<ve<int> > who(faces.size());
+    scanline(pts, faces, cnt, users, who);
     auto edges = init_edges(faces);
     dsu d(z);
     vector<int> cur_cnt(z);
@@ -420,14 +427,20 @@ int main(){
             for(int i = 0; i < z; ++i)
                 comps[d.get(i)].push_back(i);
             ve<ve<int> > ans;
+            ve<ve<int> > ansusers;
             for(auto i : comps){
                 if(i.empty()) continue;
                 ve<ve<int> > curadj(n);
+                ansusers.emplace_back();
+                map<pii, bool> visedge;
                 auto add_edge = [&](int u, int v){
+                    if(visedge[{u, v}]) return;
                     curadj[u].push_back(v);
                     curadj[v].push_back(u);
+                    visedge[{u, v}] = visedge[{v, u}] = 1;
                 };
                 for(auto k : i){
+                    ansusers.back().insert(ansusers.back().end(), who[k].begin(), who[k].end());
                     add_edge(faces[k].front(), faces[k].back());
                     for(int it = 1; it < faces[k].size(); it++)
                         add_edge(faces[k][it], faces[k][it - 1]);
@@ -436,10 +449,17 @@ int main(){
                 ans.push_back(cur[0]);
             }
             cout << ans.size() << "\n";
+            int it = 0;
             for(auto i : ans){
+                cout << i.size() << "\n";
                 for(auto j : i)
                     cout << inputids[j] << " ";
                 cout << "\n";
+                cout << ansusers[it].size() << "\n";
+                for(auto j : ansusers[it])
+                    cout << realuserids[j] << " ";
+                cout << "\n";
+                it++;
             }
             break;
         }

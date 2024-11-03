@@ -246,52 +246,56 @@ void dfs(int v, int p, vector<vector<int> >& g, vector<bool>& used, vector<int>&
     }
 }
 
-
-
-void point_location(const vector<Point>& p, vector<pair<int, int> > adj, vector<Point>& users){
-    {
-        vector<vector<int> > g(p.size());
-        for(auto [a, b] : adj){
-            g[a].push_back(b);
-            g[b].push_back(a);
+bool point_in_polygon(Point point, vector<Point> polygon)
+{
+    int num_vertices = polygon.size();
+    double x = point.x, y = point.y;
+    bool inside = false;
+    
+    // Store the first point in the polygon and initialize
+    // the second point
+    Point p1 = polygon[0], p2;
+    
+    // Loop through each edge in the polygon
+    for (int i = 1; i <= num_vertices; i++) {
+        // Get the next point in the polygon
+        p2 = polygon[i % num_vertices];
+        
+        // Check if the point is above the minimum y
+        // coordinate of the edge
+        if (y > min(p1.y, p2.y)) {
+            // Check if the point is below the maximum y
+            // coordinate of the edge
+            if (y <= max(p1.y, p2.y)) {
+                // Check if the point is to the left of the
+                // maximum x coordinate of the edge
+                if (x <= max(p1.x, p2.x)) {
+                    // Calculate the x-intersection of the
+                    // line connecting the point to the edge
+                    double x_intersection
+                    = (y - p1.y) * (p2.x - p1.x)
+                    / (p2.y - p1.y)
+                    + p1.x;
+                    
+                    // Check if the point is on the same
+                    // line as the edge or to the left of
+                    // the x-intersection
+                    if (p1.x == p2.x
+                        || x <= x_intersection) {
+                        // Flip the inside flag
+                        inside = !inside;
+                    }
+                }
+            }
         }
-        map<pair<int, int>, bool> del;
-        vector<pair<int, int> > nadj;
-        vector<bool> used(p.size());
-        vector<int> tin(p.size(), 0), tout(p.size(), 0), fup(p.size(), 0);
-        int timer = 0;
-        for(int i = 0; i < g.size(); i++)
-            if(!used[i])
-                dfs(i, -1, g, used, tin, tout, fup, timer, del);
-        for(auto [a, b] : adj)
-            if(!del[{a, b}])
-                nadj.push_back({a, b});
-        adj.swap(nadj);
+        
+        // Store the current point as the first point for
+        // the next iteration
+        p1 = p2;
     }
-    vector<event> es;
-    for(auto [a, b] : adj){
-        if(p[a].x > p[b].x) swap(a, b);
-        if(eq(p[a].x, p[b].x)) continue;
-        es.push_back({1, p[a].x, edge(p[a], p[b], 0)});
-        es.push_back({-1, p[b].x, edge(p[a], p[b], 0)});
-    }
-    for(int i = 0; i < users.size(); i++)
-        es.push_back({0, users[i].x, edge(users[i], users[i], i)});
-    sort(es.begin(), es.end());
-    set<edge, decltype(*edge_cmp)> st(edge_cmp);
-    vector<Point> res;
-    for(auto [t, x, e] : es){
-        if(t == 1)
-            st.insert(e);
-        else if(t == -1)
-            st.erase(e);
-        else{
-            auto it = st.lower_bound(e);
-            if(st.find(e) != st.end() || it == st.begin() || it == st.end()) continue;
-            res.push_back(users[e.up]);
-        }
-    }
-    users.swap(res);
+    
+    // Return the value of the inside flag
+    return inside;
 }
 
 int main(int argc, char* argv[]){
@@ -334,8 +338,9 @@ int main(int argc, char* argv[]){
         cout << a << " " << b << "\n";
         fout << a << " " << b << "\n";
     }
-    vector<Point> users(t);
+    vector<Point> users;
     for(auto& i : users){
+        
         i.x = (dbl)(rnd() % (ll)100)/10;
         i.y = (dbl)(rnd() % (ll)100)/10;
     }
