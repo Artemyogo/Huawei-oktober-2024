@@ -38,7 +38,6 @@ struct Point {
 
 int sgn(const __int128& x) { return eq(x, 0) ? 0 : le(x, 0) ? -1 : 1; }
 
-
 struct edge {
     Point l, r;
     int up;
@@ -101,64 +100,6 @@ struct dsu {
         fill(p.begin(), p.end(), -1);
     }
 };
-
-void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
-    int n = p.size();
-    ve<event> es;
-    dsu ds(faces.size());
-    ve<pair<pii, pii> > ces;
-    for(int it = 0; it < faces.size(); it++){
-        auto &f = faces[it];
-        ces.push_back({minmax(f.front(), f.back()), {it, f.front() < f.back()}});
-        for(int i = 1; i < f.size(); i++)
-            ces.push_back({minmax(f[i], f[i - 1]), {it, f[i] < f[i - 1]}});
-    }
-    sort(ces.begin(), ces.end());
-    for(int it = 0; it < ces.size(); it++){
-        if((it == 0 || ces[it - 1].fi != ces[it].fi) && (it == ces.size() - 1 || ces[it + 1].fi != ces[it].fi)){
-            auto [i, prev] = ces[it].fi;
-            if(!ces[it].se.se)
-                swap(prev, i);
-            if(p[prev].x < p[i].x){
-                es.push_back({1, p[prev].x, edge(p[prev], p[i], ces[it].se.fi + 1)});
-                es.push_back({-1, p[i].x, edge(p[prev], p[i], ces[it].se.fi + 1)});
-            }
-            else if(p[prev].x > p[i].x){
-                es.push_back({-1, p[prev].x, edge(p[i], p[prev], -ces[it].se.fi - 1)});
-                es.push_back({1, p[i].x, edge( p[i], p[prev], -ces[it].se.fi - 1)});
-            }
-        }
-        else if(it == ces.size() - 1 || ces[it + 1].fi != ces[it].fi){
-            ds.unite(ces[it].se.fi, ces[it - 1].se.fi);
-        }
-    }
-    sort(es.begin(), es.end());
-    ve<bool> del(faces.size());
-    set<edge, decltype(*edge_cmp)> st(edge_cmp);
-    for(auto [tp, x, e] : es){
-        if(tp == 1){
-            if(del[ds.get(abs(e.up) - 1)]) continue;
-            auto it = st.insert(e).first;
-            if(it == st.begin()) continue;
-            auto prv = prev(it);
-            while(prv != st.begin() && del[ds.get(abs(prv->up) - 1)]){
-                prv = prev(st.erase(prv));
-            }
-            if(it->up > 0 && !del[ds.get(abs(prv->up) - 1)] && prv->up > 0){
-                del[ds.get(abs(it->up) - 1)] = 1;
-            }
-        }
-        else if(tp == -1)
-            if(st.find(e) != st.end())
-                st.erase(e);
-    }
-    ve<ve<int> > nfaces;
-    for(int i = 0; i < faces.size(); i++)
-        if(!del[ds.get(i)])
-            nfaces.push_back(faces[i]);
-    faces.swap(nfaces);
-    
-}
 
 vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, bool inner) {
     int n = vertices.size();
@@ -253,6 +194,65 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
     return faces;
 }
 
+void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
+    int n = p.size();
+    ve<event> es;
+    dsu ds(faces.size());
+    ve<pair<pii, pii> > ces;
+    for(int it = 0; it < faces.size(); it++){
+        auto &f = faces[it];
+        ces.push_back({minmax(f.front(), f.back()), {it, f.front() < f.back()}});
+        for(int i = 1; i < f.size(); i++)
+            ces.push_back({minmax(f[i], f[i - 1]), {it, f[i] < f[i - 1]}});
+    }
+    sort(ces.begin(), ces.end());
+    for(int it = 0; it < ces.size(); it++){
+        if((it == 0 || ces[it - 1].fi != ces[it].fi) && (it == ces.size() - 1 || ces[it + 1].fi != ces[it].fi)){
+            auto [i, prev] = ces[it].fi;
+            if(!ces[it].se.se)
+                swap(prev, i);
+            if(p[prev].x < p[i].x){
+                es.push_back({1, p[prev].x, edge(p[prev], p[i], ces[it].se.fi + 1)});
+                es.push_back({-1, p[i].x, edge(p[prev], p[i], ces[it].se.fi + 1)});
+            }
+            else if(p[prev].x > p[i].x){
+                es.push_back({-1, p[prev].x, edge(p[i], p[prev], -ces[it].se.fi - 1)});
+                es.push_back({1, p[i].x, edge( p[i], p[prev], -ces[it].se.fi - 1)});
+            }
+        }
+        else if(it == ces.size() - 1 || ces[it + 1].fi != ces[it].fi){
+            ds.unite(ces[it].se.fi, ces[it - 1].se.fi);
+        }
+    }
+    sort(es.begin(), es.end());
+    ve<bool> del(faces.size());
+    set<edge, decltype(*edge_cmp)> st(edge_cmp);
+    for(auto [tp, x, e] : es){
+        if(tp == 1){
+            if(del[ds.get(abs(e.up) - 1)]) continue;
+            auto it = st.insert(e).first;
+            if(it == st.begin()) continue;
+            auto prv = prev(it);
+            while(prv != st.begin() && del[ds.get(abs(prv->up) - 1)]){
+                prv = prev(st.erase(prv));
+            }
+            if(it->up > 0 && !del[ds.get(abs(prv->up) - 1)] && prv->up > 0){
+                del[ds.get(abs(it->up) - 1)] = 1;
+            }
+        }
+        else if(tp == -1)
+            if(st.find(e) != st.end())
+                st.erase(e);
+    }
+    ve<ve<int> > nfaces;
+    for(int i = 0; i < faces.size(); i++)
+        if(!del[ds.get(i)])
+            nfaces.push_back(faces[i]);
+    faces.swap(nfaces);
+    
+}
+
+
 ll readlds(){
     string st;
     cin >> st;
@@ -268,7 +268,7 @@ ll readlds(){
 
 int realids[MAXN];
 int inputids[MAXN];
-int realuserids[MAXN];
+int inputuserids[MAXN];
 
 
 void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& users, ve<ve<int> >& who){
@@ -302,10 +302,6 @@ void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& 
         }
         else{
             auto it = st.upper_bound(e);
-            //                if(it == st.begin()){
-            //                    cout << e.l.x << " " << e.l.y   ; continue;
-            //                    assert(!st.empty());
-            //                }
             assert(it != st.begin());
             it--;
             cnt[it->up]++;
@@ -314,7 +310,7 @@ void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& 
     }
 }
 
-vector<pii> init_edges(vector<vector<int>> &faces) {
+vector<pii> init_edges(vector<vector<int>> &faces, ve<int>& border) {
     map<pii, vector<int>> mp;
     for (int i = 0; i < faces.size(); ++i) {
         auto &ve = faces[i];
@@ -332,7 +328,10 @@ vector<pii> init_edges(vector<vector<int>> &faces) {
         if (a.size() > 1) {
             edges.emplace_back(a[0], a[1]);
         }
+        else border.push_back(a[0]);
     }
+    sort(border.begin(), border.end());
+    border.erase(unique(border.begin(), border.end()), border.end());
     sort(edges.begin(), edges.end());
     edges.erase(unique(edges.begin(), edges.end()), edges.end());
     return edges;
@@ -343,9 +342,8 @@ mt19937 rng(5);
 
 const int L = 512, R = 1024;
 
-
 int main(){
-//        assert(freopen("small_Minsk.txt", "r", stdin));
+        assert(freopen("small_Minsk.txt", "r", stdin));
     int n;
     cin >> n;
     ve<Point> pts(n);
@@ -357,7 +355,7 @@ int main(){
         pts[i].x = readlds();
         pts[i].y = readlds();
     }
-    ve<ve<int> > g(n);
+    ve<ve<int> > node_graph(n);
     int m;
     cin >> m;
     ve<pii> es;
@@ -370,62 +368,123 @@ int main(){
     sort(es.begin(), es.end());
     es.erase(unique(es.begin(), es.end()), es.end());
     for(auto [a, b] : es){
-        g[a].push_back(b);
-        g[b].push_back(a);
+        node_graph[a].push_back(b);
+        node_graph[b].push_back(a);
     }
     
-    ve<ve<int> > faces = find_faces(pts, g, 0);
+    ve<ve<int> > faces = find_faces(pts, node_graph, 0);
     delete_inner(pts, faces);
+    
     int z = faces.size();
     int t;
     cin >> t;
     ve<Point> users(t);
+    
     for(int it = 0; it < t; it++){
         auto &i = users[it];
         int id;
         cin >> id;
-        realuserids[it] = id;
+        inputuserids[it] = id;
         i.x = readlds();
         i.y = readlds();
     }
+    
     ve<int> cnt(faces.size(), 0);
     ve<ve<int> > who(faces.size());
     scanline(pts, faces, cnt, users, who);
-    auto edges = init_edges(faces);
+    ve<int> border;
+    auto edges = init_edges(faces, border);
     dsu d(z);
+    
+    ve<ve<int> > faceg(z);
+    for(auto [a, b] : edges){
+        faceg[a].push_back(b);
+        faceg[b].push_back(a);
+    }
+    
     vector<int> cur_cnt(z);
-    int iter = 0;
-    while (true) { // this part sucks
-        shuffle(edges.begin(), edges.end(), rng);
-        d.clear();
-        cur_cnt = cnt;
-        int cmp = z;
-        for (auto &[u, v] : edges) {
-            if (!d.same(u, v)) {
-                int cu = cur_cnt[d.get(u)];
-                int cv = cur_cnt[d.get(v)];
-                if ((cu < L || cv < L) && cu + cv <= R) {
-                    cur_cnt[d.get(u)] = cur_cnt[d.get(v)] = 0;
-                    d.unite(u, v);
-                    cur_cnt[d.get(u)] = cu + cv;
+    
+    ve<int> borderdst(z, 1e9);
+    {
+        queue<int> q;
+        for(auto i : border){
+            q.push(i);
+            borderdst[i] = 0;
+        }
+        while(!q.empty()){
+            int v = q.front();
+            q.pop();
+            for(auto to : faceg[v])
+                if(borderdst[to] > borderdst[v] + 1){
+                    borderdst[to] = borderdst[v] + 1;
+                    q.push(to);
                 }
+        }
+    }
+    ve<int> compall(z, -1);
+    
+    auto dfs = [&](int v){
+        stack<int> st;
+        st.push(v);
+        while(!st.empty()){
+            v = st.top();
+            st.pop();
+            for(auto to : faceg[v])
+                if(compall[to] == -1){
+                    compall[to] = compall[v];
+                    st.push(to);
+                }
+        }
+    };
+    for(int i = 0; i < z; i++)
+        if(compall[i] == -1){
+            compall[i] = i;
+            dfs(i);
+        }
+    
+    while (true) { // this part sucks
+        for(auto& i : faceg)
+            shuffle(i.begin(), i.end(), rng);
+        auto compare = [&](int a, int b){
+            return borderdst[a] > borderdst[b];
+        };
+        priority_queue<int, vector<int>, decltype(compare)> start(compare);
+        ve<bool> viscompall(z, 0);
+        for(int i = 0; i < z; i++)
+            if(borderdst[i] == 0 && !viscompall[compall[i]]){
+                viscompall[compall[i]] = 1;
+                start.push(i);
+                break;
+            }
+        ve<int> compcol(z, -1), compsz = cnt;
+        while(!start.empty()){
+            int s = start.top();
+            start.pop();
+            if(compcol[s] != -1) continue;
+            compcol[s] = s;
+            queue<int> q;
+            q.push(s);
+            while(!q.empty()){
+                int v = q.front();
+                q.pop();
+                for(auto to : faceg[v]){
+                    if(compcol[to] != -1) continue;
+                    if(compsz[s] >= L || compsz[s] + compsz[to] > R)
+                        start.push(to);
+                    else{
+                        compcol[to] = s;
+                        compsz[s] += compsz[to];
+                        q.push(to);
+                    }
+                }
+
             }
         }
         bool done = true;
-        int mn = 10000000, mx = 0;
-        for (int i = 0; i < z; ++i) {
-            if (cur_cnt[d.get(i)] < L || cur_cnt[d.get(i)] > R) {
-                done = false;
-            }
-            if (cur_cnt[d.get(i)] > 0) {
-                mn = min(mn, cur_cnt[d.get(i)]);
-            }
-            mx = max(mx, cur_cnt[d.get(i)]);
-        }
-        if (done){ //this part sucks too
-            ve<ve<int>> comps(z);
+        if (done){
+            ve<ve<int> > comps(z);
             for(int i = 0; i < z; ++i)
-                comps[d.get(i)].push_back(i);
+                comps[compcol[i]].push_back(i);
             ve<ve<int> > ans;
             ve<ve<int> > ansusers;
             for(auto i : comps){
@@ -457,7 +516,7 @@ int main(){
                 cout << "\n";
                 cout << ansusers[it].size() << "\n";
                 for(auto j : ansusers[it])
-                    cout << realuserids[j] << " ";
+                    cout << inputuserids[j] << " ";
                 cout << "\n";
                 it++;
             }
