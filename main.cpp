@@ -12,22 +12,22 @@ const int MAXN = 1e6+10;
 
 struct Point {
     ll x, y;
-    
+
     Point() {}
     Point(ll x_, ll y_): x(x_), y(y_) {}
-    
+
     Point operator - (const Point & p) const {
         return Point(x - p.x, y - p.y);
     }
-    
+
     __int128 cross (const Point & p) const {
         return (__int128)x * p.y - (__int128)y * p.x;
     }
-    
+
     __int128 cross (const Point & p, const Point & q) const {
         return (p - *this).cross(q - *this);
     }
-    
+
     int half () const {
         return int(y < 0 || (y == 0 && x < 0));
     }
@@ -94,7 +94,7 @@ struct dsu {
         if(p[u] > p[v]) swap(u, v);
         p[u] += p[v];
         p[v] = u;
-        
+
     }
     void clear() {
         fill(p.begin(), p.end(), -1);
@@ -249,7 +249,7 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
         if(!del[ds.get(i)])
             nfaces.push_back(faces[i]);
     faces.swap(nfaces);
-    
+
 }
 
 
@@ -262,7 +262,7 @@ ll readlds(){
     else st.erase(pos, 1);
     while(st.size() - pos < 15)
         st.push_back('0');
-    
+
     return stoll(st);
 }
 
@@ -343,7 +343,7 @@ mt19937 rng(5);
 const int L = 512, R = 1024;
 
 int main(){
-        assert(freopen("small_Minsk.txt", "r", stdin));
+    assert(freopen("small_Minsk.txt", "r", stdin));
     int n;
     cin >> n;
     ve<Point> pts(n);
@@ -371,15 +371,15 @@ int main(){
         node_graph[a].push_back(b);
         node_graph[b].push_back(a);
     }
-    
+
     ve<ve<int> > faces = find_faces(pts, node_graph, 0);
     delete_inner(pts, faces);
-    
+
     int z = faces.size();
     int t;
     cin >> t;
     ve<Point> users(t);
-    
+
     for(int it = 0; it < t; it++){
         auto &i = users[it];
         int id;
@@ -388,22 +388,20 @@ int main(){
         i.x = readlds();
         i.y = readlds();
     }
-    
+
     ve<int> cnt(faces.size(), 0);
     ve<ve<int> > who(faces.size());
     scanline(pts, faces, cnt, users, who);
     ve<int> border;
     auto edges = init_edges(faces, border);
     dsu d(z);
-    
+
     ve<ve<int> > faceg(z);
     for(auto [a, b] : edges){
         faceg[a].push_back(b);
         faceg[b].push_back(a);
     }
-    
-    vector<int> cur_cnt(z);
-    
+
     ve<int> borderdst(z, 1e9);
     {
         queue<int> q;
@@ -422,7 +420,7 @@ int main(){
         }
     }
     ve<int> compall(z, -1);
-    
+
     auto dfs = [&](int v){
         stack<int> st;
         st.push(v);
@@ -441,7 +439,7 @@ int main(){
             compall[i] = i;
             dfs(i);
         }
-    
+
     while (true) { // this part sucks
         for(auto& i : faceg)
             shuffle(i.begin(), i.end(), rng);
@@ -450,12 +448,12 @@ int main(){
         };
         priority_queue<int, vector<int>, decltype(compare)> start(compare);
         ve<bool> viscompall(z, 0);
-        for(int i = 0; i < z; i++)
+        for(int i = 0; i < z; i++) {
             if(borderdst[i] == 0 && !viscompall[compall[i]]){
                 viscompall[compall[i]] = 1;
                 start.push(i);
-                break;
             }
+        }
         ve<int> compcol(z, -1), compsz = cnt;
         while(!start.empty()){
             int s = start.top();
@@ -468,19 +466,104 @@ int main(){
                 int v = q.front();
                 q.pop();
                 for(auto to : faceg[v]){
-                    if(compcol[to] != -1) continue;
-                    if(compsz[s] >= L || compsz[s] + compsz[to] > R)
-                        start.push(to);
-                    else{
+                    if (compcol[to] != -1) continue;
+                    if (compsz[s] <= L && compsz[s] + compsz[to] <= R) {
                         compcol[to] = s;
                         compsz[s] += compsz[to];
                         q.push(to);
+                    } else {
+                        start.push(to);
                     }
                 }
 
             }
         }
         bool done = true;
+
+        vector<vector<int>> comp(z);
+        for (int i = 0; i < z; ++i) {
+            comp[compcol[i]].push_back(i);
+        }
+        vector<int> to_process;
+        for (int i = 0; i < z; ++i) {
+            assert(compsz[compcol[i]] <= R);
+            if (comp[i].size() > 0 && compsz[i] < L) {
+                to_process.push_back(i);
+            }
+        }
+
+        vector<int> mrk(z);
+        vector<vector<int>> temp_g(z);
+        vector<int> pt(z);
+        shuffle(to_process.begin(), to_process.end(), rng);
+        for (auto &ci : to_process) {
+            auto cmp = comp[ci];
+            vector<int> nei;
+            for (auto &u : cmp) {
+                for (auto &v : faceg[u]) {
+                    nei.push_back(v);
+                    if (compcol[v] != ci) {
+                        mrk[v] = 1;
+                    }
+                    temp_g[v].push_back(u);
+                }
+            }
+            sort(nei.begin(), nei.end());
+            nei.erase(unique(nei.begin(), nei.end()), nei.end());
+            auto compare = [&](int u, int v) {
+                return compsz[compcol[u]] < compsz[compcol[v]];
+            };
+            priority_queue<int, vector<int>, decltype(compare)> s(compare);
+            for (auto &u : nei) {
+                s.push(u);
+            }
+            while (!s.empty()) {
+                int u = s.top(); s.pop();
+                int id = compcol[u];
+                for (; pt[u] < temp_g[u].size(); ++pt[u]) {
+                    int v = temp_g[u][pt[u]];
+                    if (!mrk[v] && compsz[id] + cnt[v] <= R) {
+                        mrk[v] = 1;
+                        compcol[v] = id;
+                        compsz[id] += cnt[v];
+                        comp[id].push_back(v);
+                        s.push(v);
+                        break;
+                    }
+                }
+                if (pt[u] != temp_g[u].size()) {
+                    s.push(u);
+                }
+            }
+
+//            for (auto &u : cmp) {
+//                if (!mrk[u]) {
+//                    done = false;
+//                    cout << u << ": " << cnt[u] << "\n";
+//                }
+//            }
+//
+//            if (!done) {
+//                exit(0);
+//            }
+
+            for (auto &u : nei) {
+                temp_g[u].clear();
+                pt[u] = 0;
+            }
+            for (auto &u: cmp) {
+                temp_g[u].clear();
+                pt[u] = 0;
+            }
+        }
+
+        for (int i = 0; i < z; ++i) {
+            if (compsz[compcol[i]] < L) {
+                done = false;
+            }
+        }
+
+
         if (done){
             ve<ve<int> > comps(z);
             for(int i = 0; i < z; ++i)
@@ -522,6 +605,23 @@ int main(){
             }
             break;
         }
+//        sort(fuck.begin(), fuck.end());
+//        for (auto &u : fuck) {
+//            cout << u << " = " << cnt[u] << ":\n";
+//            auto nei = faceg[u];
+//            for (auto &i : nei) {
+//                i = compcol[i];
+//            }
+//            sort(nei.begin(), nei.end());
+//            nei.erase(unique(nei.begin(), nei.end()), nei.end());
+//            bool have = false;
+//            for (auto &i : nei) {
+//                if (!bad_fl[i]) {
+//                    cout << " " << compsz[i] << "\n";
+//                }
+//            }
+//        }
+//        exit(0);
         //        cout << iter++ << ": " << mn << ", " << mx << "\n";
     }
     //    cout << "yay\n";
