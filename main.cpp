@@ -501,8 +501,8 @@ int main(){
             vector<int> nei;
             for (auto &u : cmp) {
                 for (auto &v : faceg[u]) {
-                    nei.push_back(v);
                     if (compcol[v] != ci) {
+                        nei.push_back(v);
                         mrk[v] = 1;
                     }
                     temp_g[v].push_back(u);
