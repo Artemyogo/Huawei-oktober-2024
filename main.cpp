@@ -492,26 +492,43 @@ int main(){
             }
         }
 
-        vector<int> mrk(z);
+        vector<int> mrk(z), bdst(z, -1);
         vector<vector<int>> temp_g(z);
         vector<int> pt(z);
         shuffle(to_process.begin(), to_process.end(), rng);
         for (auto &ci : to_process) {
             auto cmp = comp[ci];
-            vector<int> nei;
+            vector<int> nei, bfs;
             for (auto &u : cmp) {
                 for (auto &v : faceg[u]) {
                     if (compcol[v] != ci) {
                         nei.push_back(v);
                         mrk[v] = 1;
+                        if (!~bdst[v]) {
+                            bdst[v] = 0;
+                            bfs.push_back(v);
+                        }
                     }
                     temp_g[v].push_back(u);
+                    temp_g[u].push_back(v);
                 }
             }
+            
+            shuffle(bfs.begin(), bfs.end(), rng);
+            for (int pt = 0; pt < bfs.size(); ++pt) {
+                int u = bfs[pt];
+                for (auto &v : temp_g[u]) {
+                    if (!~bdst[v]) {
+                        bdst[v] = bdst[u] + 1;
+                        bfs.push_back(v);
+                    }
+                }
+            }
+            
             sort(nei.begin(), nei.end());
             nei.erase(unique(nei.begin(), nei.end()), nei.end());
             auto compare = [&](int u, int v) {
-                return compsz[compcol[u]] < compsz[compcol[v]];
+                return bdst[u] < bdst[v];
             };
             priority_queue<int, vector<int>, decltype(compare)> s(compare);
             for (auto &u : nei) {
@@ -550,10 +567,12 @@ int main(){
             for (auto &u : nei) {
                 temp_g[u].clear();
                 pt[u] = 0;
+                bdst[u] = -1;
             }
             for (auto &u: cmp) {
                 temp_g[u].clear();
                 pt[u] = 0;
+                bdst[u] = -1;
             }
         }
 
