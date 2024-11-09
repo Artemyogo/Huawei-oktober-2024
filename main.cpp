@@ -15,22 +15,22 @@ const int MAXN = 1e6+10;
 
 struct Point {
     ll x, y;
-    
+
     Point() {}
     Point(ll x_, ll y_): x(x_), y(y_) {}
-    
+
     Point operator - (const Point & p) const {
         return Point(x - p.x, y - p.y);
     }
-    
+
     __int128 cross (const Point & p) const {
         return (__int128)x * p.y - (__int128)y * p.x;
     }
-    
+
     __int128 cross (const Point & p, const Point & q) const {
         return (p - *this).cross(q - *this);
     }
-    
+
     int half () const {
         return int(y < 0 || (y == 0 && x < 0));
     }
@@ -109,7 +109,7 @@ struct dsu {
         if(p[u] > p[v]) swap(u, v);
         p[u] += p[v];
         p[v] = u;
-        
+
     }
     void clear() {
         fill(p.begin(), p.end(), -1);
@@ -268,7 +268,7 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
         if(!del[ds.get(i)])
             nfaces.push_back(faces[i]);
     faces.swap(nfaces);
-    
+
 }
 
 
@@ -281,7 +281,7 @@ ll readlds(){
     else st.erase(pos, 1);
     while(st.size() - pos < 15)
         st.push_back('0');
-    
+
     return stoll(st);
 }
 
@@ -364,7 +364,7 @@ void latLonToXYZ(ld latitude, ld longitude, ld& x, ld& y, ld& z) {
     // Convert degrees to radians
     ld latRad = latitude * M_PI / 180.0;
     ld lonRad = longitude * M_PI / 180.0;
-    
+
     // Compute the 3D coordinates
     x = EARTH_RADIUS * cos(latRad) * cos(lonRad);
     y = EARTH_RADIUS * cos(latRad) * sin(lonRad);
@@ -407,7 +407,7 @@ const int L = 512, R = 1024;
 
 int main(){
     int TL = 9000;
-    //        assert(freopen("small_Minsk.txt", "r", stdin));
+//    assert(freopen("small_Minsk.txt", "r", stdin));
     timetracker timer;
     timer.begintimer();
     int n;
@@ -437,15 +437,15 @@ int main(){
         node_graph[a].push_back(b);
         node_graph[b].push_back(a);
     }
-    
+
     ve<ve<int> > faces = find_faces(pts, node_graph, 0);
     delete_inner(pts, faces);
-    
+
     int z = faces.size();
     int t;
     cin >> t;
     ve<Point> users(t);
-    
+
     for(int it = 0; it < t; it++){
         auto &i = users[it];
         int id;
@@ -454,20 +454,20 @@ int main(){
         i.x = readlds();
         i.y = readlds();
     }
-    
+
     ve<int> cnt(faces.size(), 0);
     ve<ve<int> > who(faces.size());
     scanline(pts, faces, cnt, users, who);
     ve<int> border;
     auto edges = init_edges(faces, border);
     dsu d(z);
-    
+
     ve<ve<int> > faceg(z);
     for(auto [a, b] : edges){
         faceg[a].push_back(b);
         faceg[b].push_back(a);
     }
-    
+
     ve<int> borderdst(z, 1e9);
     {
         queue<int> q;
@@ -486,7 +486,7 @@ int main(){
         }
     }
     ve<int> compall(z, -1);
-    
+
     auto dfs = [&](int v){
         stack<int> st;
         st.push(v);
@@ -505,12 +505,12 @@ int main(){
             compall[i] = i;
             dfs(i);
         }
-    
+
     vector<vector<int>> _ans;
     vector<vector<int>> _ansusers;
     ve<int> _compcol;
     ld bst = 1e18;
-    
+
     bool done = false;
     ve<int> compcol(z, -1), compsz = cnt, _compsz;
     ve<set<int> > setfaceg;
@@ -552,10 +552,10 @@ int main(){
                         start.push(to);
                     }
                 }
-                
+
             }
         }
-        
+
         vector<vector<int>> comp(z);
         for (int i = 0; i < z; ++i) {
             comp[compcol[i]].push_back(i);
@@ -571,7 +571,7 @@ int main(){
                 }
             }
         }
-        
+
         vector<int> bdst(z, -1);
         vector<vector<int>> temp_g(z);
         vector<int> pt(z);
@@ -592,7 +592,7 @@ int main(){
                     temp_g[u].push_back(v);
                 }
             }
-            
+
             shuffle(bfs.begin(), bfs.end(), rng);
             for (int pt = 0; pt < bfs.size(); ++pt) {
                 int u = bfs[pt];
@@ -603,7 +603,7 @@ int main(){
                     }
                 }
             }
-            
+
             sort(nei.begin(), nei.end());
             nei.erase(unique(nei.begin(), nei.end()), nei.end());
             auto compare = [&](int u, int v) {
@@ -635,7 +635,7 @@ int main(){
                     s.push(u);
                 }
             }
-            
+
             //            for (auto &u : cmp) {
             //                if (!mrk[u]) {
             //                    done = false;
@@ -646,7 +646,7 @@ int main(){
             //            if (!done) {
             //                exit(0);
             //            }
-            
+
             for (auto &u : nei) {
                 temp_g[u].clear();
                 pt[u] = 0;
@@ -658,13 +658,13 @@ int main(){
                 bdst[u] = -1;
             }
         }
-        
+
         for (int i = 0; i < z; ++i) {
             if (compsz[compcol[i]] < L) {
                 done = false;
             }
         }
-        
+
         if (done){
             ve<ve<int> > comps(z);
             for(int i = 0; i < z; ++i)
@@ -691,9 +691,9 @@ int main(){
                 ve<ve<int> > cur = find_faces(pts, curadj, 1);
                 ans.push_back(cur[0]);
             }
-            
+
             ld val = eval(ans, pts);
-            
+
             if (val < bst) {
                 bst = val;
                 _ans = ans;
@@ -701,13 +701,17 @@ int main(){
                 _compcol = compcol;
                 _compsz = compsz;
             }
-            
+
         }
     }
     //--------------------------
     ld dtemp = 0.99, temp = 1;
     int current_prob = 100;
+    ld cur = bst;
     while(timer.get() < TL){
+        auto rcompsz = compsz;
+        auto rcompinnercnt = compinnercnt;
+        auto rcompcol = compcol;
         temp *= dtemp;
         bool ok = 1;
         for(int i = 0; i < z; i++){
@@ -725,7 +729,7 @@ int main(){
             comps[compcol[i]].push_back(i);
         ve<ve<int> > ans;
         ve<ve<int> > ansusers;
-        
+
         for(int it = 0; it < z; it++){
             auto &i = comps[it];
             if(i.empty()) continue;
@@ -749,24 +753,32 @@ int main(){
             ok &= facescnt == compinnercnt[it];
             ans.push_back(cur[0]);
         }
-        ld val = eval(ans, pts);
-        if(ok && val < bst || rand_double() < exp((bst - val)/t)){
-            bst = val;
-            _ans = ans;
-            _ansusers = ansusers;
-            _compcol = compcol;
-            _compsz = compsz;
+
+        if (!ok) {
+            compcol = rcompcol;
+            compinnercnt = rcompinnercnt;
+            compsz = rcompsz;
+        } else {
+            ld val = eval(ans, pts);
+
+            if (val < bst) {
+                bst = val;
+                _ans = ans;
+                _ansusers = ansusers;
+            }
+
+            if(val < cur || rand_double() < exp((cur - val)/t)){
+                cur = val;
+            }
+            else{
+                compcol = rcompcol;
+                compsz = rcompsz;
+                compinnercnt = rcompinnercnt;
+            }
         }
-        else{
-            bst = val;
-            compcol = _compcol;
-            compsz = _compsz;
-        }
-        
-        
     }
-    
-    
+
+
     cout << _ans.size() << "\n";
     int it = 0;
     for(auto i : _ans){
