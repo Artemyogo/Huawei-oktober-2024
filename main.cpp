@@ -116,6 +116,8 @@ struct dsu {
     }
 };
 
+int facescnt;
+
 vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, bool inner) {
     int n = vertices.size();
     vector<vector<bool>> used(n);
@@ -153,6 +155,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
         };
         sort(adj[i].begin(), adj[i].end(), compare);
     }
+    facescnt = 0;
     vector<vector<int>> faces;
     for (int i = 0; i < n; i++) {
         for (int edge_id = 0; edge_id < adj[i].size(); edge_id++) {
@@ -203,6 +206,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
                 }
                 if ((!inner && sgn(sum) > 0) || (inner && sgn(sum) < 0))
                     faces.emplace_back(face);
+                else facescnt++;
             }
         }
     }
@@ -403,7 +407,7 @@ const int L = 512, R = 1024;
 
 int main(){
     int TL = 9000;
-//        assert(freopen("small_Minsk.txt", "r", stdin));
+    //        assert(freopen("small_Minsk.txt", "r", stdin));
     timetracker timer;
     timer.begintimer();
     int n;
@@ -510,6 +514,7 @@ int main(){
     bool done = false;
     ve<int> compcol(z, -1), compsz = cnt, _compsz;
     ve<set<int> > setfaceg;
+    ve<int> compinnercnt(z, 1);
     while (!done) { // this part not sucks
         done = true;
         for(auto& i : faceg)
@@ -541,6 +546,7 @@ int main(){
                     if (compsz[s] <= L && compsz[s] + compsz[to] <= R) {
                         compcol[to] = s;
                         compsz[s] += compsz[to];
+                        compinnercnt[s]++;
                         q.push(to);
                     } else {
                         start.push(to);
@@ -619,6 +625,7 @@ int main(){
                         mrk[v] = 1;
                         compcol[v] = id;
                         compsz[id] += cnt[v];
+                        compinnercnt[id]++;
                         comp[id].push_back(v);
                         s.push(v);
                         break;
@@ -707,7 +714,9 @@ int main(){
             int to = faceg[i][rng() % faceg[i].size()];
             if(compcol[to] != compcol[i] && rng() % current_prob == 0 && compsz[compcol[i]] - cnt[i] >= L && compsz[compcol[to]] + cnt[i] <= R){
                 compsz[compcol[i]] -= cnt[i];
+                compinnercnt[compcol[i]]--;
                 compsz[compcol[to]] += cnt[i];
+                compinnercnt[compcol[to]]++;
                 compcol[i] = compcol[to];
             }
         }
@@ -716,7 +725,9 @@ int main(){
             comps[compcol[i]].push_back(i);
         ve<ve<int> > ans;
         ve<ve<int> > ansusers;
-        for(auto i : comps){
+        
+        for(int it = 0; it < z; it++){
+            auto &i = comps[it];
             if(i.empty()) continue;
             ve<ve<int> > curadj(n);
             ansusers.emplace_back();
@@ -735,6 +746,7 @@ int main(){
             }
             ve<ve<int> > cur = find_faces(pts, curadj, 1);
             ok &= cur.size() == 1;
+            ok &= facescnt == compinnercnt[it];
             ans.push_back(cur[0]);
         }
         ld val = eval(ans, pts);
