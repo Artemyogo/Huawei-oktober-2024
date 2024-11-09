@@ -15,35 +15,35 @@ const int MAXN = 1e6+10;
 
 struct Point {
     ll x, y;
-
+    
     Point() {}
     Point(ll x_, ll y_): x(x_), y(y_) {}
-
+    
     Point operator - (const Point & p) const {
         return Point(x - p.x, y - p.y);
     }
-
+    
     __int128 cross (const Point & p) const {
         return (__int128)x * p.y - (__int128)y * p.x;
     }
-
+    
     __int128 cross (const Point & p, const Point & q) const {
         return (p - *this).cross(q - *this);
     }
-
+    
     int half () const {
         return int(y < 0 || (y == 0 && x < 0));
     }
 };
 
 struct timetracker {
-	chrono::milliseconds timetaken;
-	std::chrono::steady_clock::time_point begin;
-	void begintimer() {
-		begin = chrono::steady_clock::now();
-	}
-	int get() {
-	    return chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - begin).count();
+    chrono::milliseconds timetaken;
+    std::chrono::steady_clock::time_point begin;
+    void begintimer() {
+        begin = chrono::steady_clock::now();
+    }
+    int get() {
+        return chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - begin).count();
     }
 };
 
@@ -109,7 +109,7 @@ struct dsu {
         if(p[u] > p[v]) swap(u, v);
         p[u] += p[v];
         p[v] = u;
-
+        
     }
     void clear() {
         fill(p.begin(), p.end(), -1);
@@ -264,7 +264,7 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
         if(!del[ds.get(i)])
             nfaces.push_back(faces[i]);
     faces.swap(nfaces);
-
+    
 }
 
 
@@ -277,7 +277,7 @@ ll readlds(){
     else st.erase(pos, 1);
     while(st.size() - pos < 15)
         st.push_back('0');
-
+    
     return stoll(st);
 }
 
@@ -352,51 +352,58 @@ vector<pii> init_edges(vector<vector<int>> &faces, ve<int>& border) {
     return edges;
 }
 
-const double EARTH_RADIUS = 1000.0; // Radius of Earth in kilometers
+#define ld long double
+const ld EARTH_RADIUS = 6371; // Radius of Earth in kilometers
 
 // Function to convert latitude and longitude to 3D coordinates
-void latLonToXYZ(double latitude, double longitude, double& x, double& y, double& z) {
+void latLonToXYZ(ld latitude, ld longitude, ld& x, ld& y, ld& z) {
     // Convert degrees to radians
-    double latRad = latitude * M_PI / 180.0;
-    double lonRad = longitude * M_PI / 180.0;
-
+    ld latRad = latitude * M_PI / 180.0;
+    ld lonRad = longitude * M_PI / 180.0;
+    
     // Compute the 3D coordinates
     x = EARTH_RADIUS * cos(latRad) * cos(lonRad);
     y = EARTH_RADIUS * cos(latRad) * sin(lonRad);
     z = EARTH_RADIUS * sin(latRad);
 }
 
-double eval(vector<vector<int>> &ans, vector<Point> &pts) {
-    double sum = 0;
+
+ld eval(vector<vector<int>> &ans, vector<Point> &pts) {
+    ld sum = 0;
     for (auto &ve : ans) {
+        ld pr = 0;
         for (int i = 0; i < ve.size(); ++i) {
             int j = (i + 1) % ve.size();
             int k = (i + 2) % ve.size();
             Point A = pts[i], B = pts[j], C = pts[k];
-            array<double, 3> a, b, c;
-            latLonToXYZ(A.x / 1e15, A.y / 1e15, a[0], a[1], a[2]);
-            latLonToXYZ(B.x / 1e15, B.y / 1e15, b[0], b[1], b[2]);
-            latLonToXYZ(C.x / 1e15, C.y / 1e15, c[0], c[1], c[2]);
-            array<double, 3> ab = {b[0] - a[0], b[1] - a[1], b[2] - a[2]};
-            array<double, 3> bc = {c[0] - b[0], c[1] - b[1], c[2] - b[2]};
-            double ab_l = sqrt(ab[0] * ab[0] + ab[1] * ab[1] + ab[2] * ab[2]);
-            double bc_l = sqrt(bc[0] * bc[0] + bc[1] * bc[1] + bc[2] * bc[2]);
-            double cr = ab[0] * bc[0] + ab[1] * bc[1] + ab[2] * bc[2];
-            sum += acos(cr / ab_l / bc_l);
+            array<ld, 3> a, b, c;
+            latLonToXYZ((ld)A.x / 1e15, (ld)A.y / 1e15, a[0], a[1], a[2]);
+            latLonToXYZ((ld)B.x / 1e15, (ld)B.y / 1e15, b[0], b[1], b[2]);
+            latLonToXYZ((ld)C.x / 1e15, (ld)C.y / 1e15, c[0], c[1], c[2]);
+            array<ld, 3> ab = {b[0] - a[0], b[1] - a[1], b[2] - a[2]};
+            array<ld, 3> bc = {c[0] - b[0], c[1] - b[1], c[2] - b[2]};
+            ld ab_l = sqrt(ab[0] * ab[0] + ab[1] * ab[1] + ab[2] * ab[2]);
+            ld bc_l = sqrt(bc[0] * bc[0] + bc[1] * bc[1] + bc[2] * bc[2]);
+            ld cr = ab[0] * bc[0] + ab[1] * bc[1] + ab[2] * bc[2];
+            pr += acos(cr / ab_l / bc_l);
         }
+        sum = max(sum, pr);
     }
     return sum;
 }
 
 mt19937 rng(5);
 
+double rand_double(){
+    return (double)(rng())/(double)(rng.max());
+}
 
 const int L = 512, R = 1024;
 
-const int TL = 8000;
 
 int main(){
-//    assert(freopen("small_Minsk.txt", "r", stdin));
+    int TL = 9000;
+//        assert(freopen("small_Minsk.txt", "r", stdin));
     timetracker timer;
     timer.begintimer();
     int n;
@@ -426,15 +433,15 @@ int main(){
         node_graph[a].push_back(b);
         node_graph[b].push_back(a);
     }
-
+    
     ve<ve<int> > faces = find_faces(pts, node_graph, 0);
     delete_inner(pts, faces);
-
+    
     int z = faces.size();
     int t;
     cin >> t;
     ve<Point> users(t);
-
+    
     for(int it = 0; it < t; it++){
         auto &i = users[it];
         int id;
@@ -443,20 +450,20 @@ int main(){
         i.x = readlds();
         i.y = readlds();
     }
-
+    
     ve<int> cnt(faces.size(), 0);
     ve<ve<int> > who(faces.size());
     scanline(pts, faces, cnt, users, who);
     ve<int> border;
     auto edges = init_edges(faces, border);
     dsu d(z);
-
+    
     ve<ve<int> > faceg(z);
     for(auto [a, b] : edges){
         faceg[a].push_back(b);
         faceg[b].push_back(a);
     }
-
+    
     ve<int> borderdst(z, 1e9);
     {
         queue<int> q;
@@ -475,7 +482,7 @@ int main(){
         }
     }
     ve<int> compall(z, -1);
-
+    
     auto dfs = [&](int v){
         stack<int> st;
         st.push(v);
@@ -494,12 +501,17 @@ int main(){
             compall[i] = i;
             dfs(i);
         }
-
+    
     vector<vector<int>> _ans;
     vector<vector<int>> _ansusers;
-    double bst = 1e18;
-
-    while (timer.get() < TL) { // this part sucks
+    ve<int> _compcol;
+    ld bst = 1e18;
+    
+    bool done = false;
+    ve<int> compcol(z, -1), compsz = cnt, _compsz;
+    ve<set<int> > setfaceg;
+    while (!done) { // this part not sucks
+        done = true;
         for(auto& i : faceg)
             shuffle(i.begin(), i.end(), rng);
         auto compare = [&](int a, int b){
@@ -513,7 +525,7 @@ int main(){
                 start.push(i);
             }
         }
-        ve<int> compcol(z, -1), compsz = cnt;
+        compcol = ve<int>(z, -1), compsz = cnt;
         while(!start.empty()){
             int s = start.top();
             start.pop();
@@ -534,11 +546,10 @@ int main(){
                         start.push(to);
                     }
                 }
-
+                
             }
         }
-        bool done = true;
-
+        
         vector<vector<int>> comp(z);
         for (int i = 0; i < z; ++i) {
             comp[compcol[i]].push_back(i);
@@ -554,7 +565,7 @@ int main(){
                 }
             }
         }
-
+        
         vector<int> bdst(z, -1);
         vector<vector<int>> temp_g(z);
         vector<int> pt(z);
@@ -575,7 +586,7 @@ int main(){
                     temp_g[u].push_back(v);
                 }
             }
-
+            
             shuffle(bfs.begin(), bfs.end(), rng);
             for (int pt = 0; pt < bfs.size(); ++pt) {
                 int u = bfs[pt];
@@ -586,15 +597,15 @@ int main(){
                     }
                 }
             }
-
+            
             sort(nei.begin(), nei.end());
             nei.erase(unique(nei.begin(), nei.end()), nei.end());
             auto compare = [&](int u, int v) {
                 return bdst[u] < bdst[v];
             };
-//            auto compare = [&](int u, int v) {
-//                return compsz[compcol[u]] < compsz[compcol[v]];
-//            };
+            //            auto compare = [&](int u, int v) {
+            //                return compsz[compcol[u]] < compsz[compcol[v]];
+            //            };
             priority_queue<int, vector<int>, decltype(compare)> s(compare);
             for (auto &u : nei) {
                 s.push(u);
@@ -617,18 +628,18 @@ int main(){
                     s.push(u);
                 }
             }
-
-//            for (auto &u : cmp) {
-//                if (!mrk[u]) {
-//                    done = false;
-//                    cout << u << ": " << cnt[u] << "\n";
-//                }
-//            }
-//
-//            if (!done) {
-//                exit(0);
-//            }
-
+            
+            //            for (auto &u : cmp) {
+            //                if (!mrk[u]) {
+            //                    done = false;
+            //                    cout << u << ": " << cnt[u] << "\n";
+            //                }
+            //            }
+            //
+            //            if (!done) {
+            //                exit(0);
+            //            }
+            
             for (auto &u : nei) {
                 temp_g[u].clear();
                 pt[u] = 0;
@@ -640,13 +651,13 @@ int main(){
                 bdst[u] = -1;
             }
         }
-
+        
         for (int i = 0; i < z; ++i) {
             if (compsz[compcol[i]] < L) {
                 done = false;
             }
         }
-
+        
         if (done){
             ve<ve<int> > comps(z);
             for(int i = 0; i < z; ++i)
@@ -673,17 +684,77 @@ int main(){
                 ve<ve<int> > cur = find_faces(pts, curadj, 1);
                 ans.push_back(cur[0]);
             }
-
-            double val = eval(ans, pts);
-
+            
+            ld val = eval(ans, pts);
+            
             if (val < bst) {
                 bst = val;
                 _ans = ans;
                 _ansusers = ansusers;
+                _compcol = compcol;
+                _compsz = compsz;
             }
-
+            
         }
     }
+    //--------------------------
+    ld dtemp = 0.99, temp = 1;
+    int current_prob = 100;
+    while(timer.get() < TL){
+        temp *= dtemp;
+        bool ok = 1;
+        for(int i = 0; i < z; i++){
+            int to = faceg[i][rng() % faceg[i].size()];
+            if(compcol[to] != compcol[i] && rng() % current_prob == 0 && compsz[compcol[i]] - cnt[i] >= L && compsz[compcol[to]] + cnt[i] <= R){
+                compsz[compcol[i]] -= cnt[i];
+                compsz[compcol[to]] += cnt[i];
+                compcol[i] = compcol[to];
+            }
+        }
+        ve<ve<int> > comps(z);
+        for(int i = 0; i < z; ++i)
+            comps[compcol[i]].push_back(i);
+        ve<ve<int> > ans;
+        ve<ve<int> > ansusers;
+        for(auto i : comps){
+            if(i.empty()) continue;
+            ve<ve<int> > curadj(n);
+            ansusers.emplace_back();
+            map<pii, bool> visedge;
+            auto add_edge = [&](int u, int v){
+                if(visedge[{u, v}]) return;
+                curadj[u].push_back(v);
+                curadj[v].push_back(u);
+                visedge[{u, v}] = visedge[{v, u}] = 1;
+            };
+            for(auto k : i){
+                ansusers.back().insert(ansusers.back().end(), who[k].begin(), who[k].end());
+                add_edge(faces[k].front(), faces[k].back());
+                for(int it = 1; it < faces[k].size(); it++)
+                    add_edge(faces[k][it], faces[k][it - 1]);
+            }
+            ve<ve<int> > cur = find_faces(pts, curadj, 1);
+            ok &= cur.size() == 1;
+            ans.push_back(cur[0]);
+        }
+        ld val = eval(ans, pts);
+        if(ok && val < bst || rand_double() < exp((bst - val)/t)){
+            bst = val;
+            _ans = ans;
+            _ansusers = ansusers;
+            _compcol = compcol;
+            _compsz = compsz;
+        }
+        else{
+            bst = val;
+            compcol = _compcol;
+            compsz = _compsz;
+        }
+        
+        
+    }
+    
+    
     cout << _ans.size() << "\n";
     int it = 0;
     for(auto i : _ans){
