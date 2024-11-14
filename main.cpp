@@ -443,16 +443,15 @@ struct pqnode{
     double ang;
     int cnt;
     int id;
-    int from;
 };
 
 inline bool operator <(const pqnode& a, const pqnode& b){
-    return a.ang * b.cnt < b.ang * a.cnt;
+    return a.ang * b.cnt == b.ang * a.cnt ? a.id < b.id : a.ang * b.cnt < b.ang * a.cnt;
 }
 
 int main(){
-    //    assert(freopen("small_Minsk.txt", "r", stdin));
     ios_base::sync_with_stdio(0); cin.tie(0);
+//        assert(freopen("small_Minsk.txt", "r", stdin));
     timetracker timer;
     timer.begintimer();
     int n;
@@ -577,7 +576,7 @@ int main(){
             }
         }
         ve<int> compcol(z, -1), compsz = cnt;
-        vector<int> used(z);
+        vector<bool> used(z);
         ve<pqnode> vals(z);
         while(!start.empty()){
             int s = start.top();
@@ -589,10 +588,10 @@ int main(){
             //            };
             priority_queue<pqnode> q;
             set<pii> outer;
-            vals[s] = {-1, 1, s, -1};
+            vals[s] = {-1, 1, s};
             q.push(vals[s]);
             while(!q.empty()){
-                auto [cang, ccnt, v, from] = q.top();
+                auto [cang, ccnt, v] = q.top();
                 q.pop();
                 if(used[v]) continue;
                 used[v] = 1;
@@ -618,7 +617,7 @@ int main(){
                 for(auto to : faceg[v]){
                     if (compcol[to] != -1) continue;
                     auto &f = faces[to];
-                    vals[to] = {0, 1, to, -1};
+                    vals[to] = {0, 1, to};
                     for(int i = 0; i < f.size(); i++){
                         int a = f[i];
                         int b = f[(i + 1) % f.size()];
@@ -666,14 +665,12 @@ int main(){
                 }
             };
             for (auto &u : cmp) {
-                used[u] = -1;
                 int prev = faces[u].back();
                 for(auto i : faces[u]) {
                     toggle(minmax(prev, i));
                     prev = i;
                 }
                 for (auto &v : faceg[u]) {
-                    used[v] = -1;
                     if (mrk[v]) {
                         nei.push_back(v);
 //                        if (!~bdst[v]) {
@@ -698,12 +695,10 @@ int main(){
 
             sort(nei.begin(), nei.end());
             nei.erase(unique(nei.begin(), nei.end()), nei.end());
-            priority_queue<pqnode> s;
-            int tmr = 0;
+            set<pqnode> s;
             auto recalc = [&](int u) {
                 auto &f = faces[u];
-                vals[u] = {0, 1, u, tmr};
-                used[u] = tmr;
+                vals[u] = {0, 1, u};
                 for (int i = 0; i < f.size(); ++i) {
                     int a = f[i];
                     int b = f[(i + 1) % f.size()];
@@ -713,11 +708,10 @@ int main(){
                         vals[u].ang += eval(pts[a], pts[b], pts[c]);
                     }
                 }
-                tmr++;
             };
             for (auto &u : nei) {
                 recalc(u);
-                s.push(vals[u]);
+                s.insert(vals[u]);
             }
 
             if (rng() & 1) {
@@ -739,10 +733,10 @@ int main(){
                     shuffle(temp_g[u].begin(), temp_g[u].end(), rng);
                 }
             }
+
             while(!s.empty()) {
-                auto [_, __, u, from] = s.top();
-                s.pop();
-                if (used[u] != from) continue;
+                auto [_, __, u] = *prev(s.end());
+                s.erase(prev(s.end()));
                 int id = compcol[u];
                 for (; pt[u] < temp_g[u].size(); ++pt[u]) {
                     int v = temp_g[u][pt[u]];
@@ -756,11 +750,12 @@ int main(){
                             prev = i;
                         }
                         recalc(v);
-                        s.push(vals[v]);
+                        s.insert(vals[v]);
                         for (auto &to : temp_g[v]) {
-                            if (~used[to]) {
+                            if (s.count(vals[to])) {
+                                s.erase(vals[to]);
                                 recalc(to);
-                                s.push(vals[to]);
+                                s.insert(vals[to]);
                             }
                         }
                         break;
@@ -768,9 +763,29 @@ int main(){
                 }
                 if (pt[u] != temp_g[u].size()) {
                     recalc(u);
-                    s.push(vals[u]);
+                    s.insert(vals[u]);
                 }
+
             }
+//            while (!s.empty()) {
+//                int u = s.top(); s.pop();
+//                int id = compcol[u];
+//                for (; pt[u] < temp_g[u].size(); ++pt[u]) {
+//                    int v = temp_g[u][pt[u]];
+//                    if (!mrk[v] && compsz[id] + cnt[v] <= R) {
+//                        mrk[v] = 1;
+//                        compcol[v] = id;
+//                        compsz[id] += cnt[v];
+//                        comp[id].push_back(v);
+//                        s.push(v);
+//                        break;
+//                    }
+//                }
+//                if (pt[u] != temp_g[u].size()) {
+//                    s.push(u);
+//                }
+//            }
+
             for (auto &u : nei) {
                 temp_g[u].clear();
                 pt[u] = 0;
