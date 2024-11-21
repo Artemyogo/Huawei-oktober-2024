@@ -17,6 +17,11 @@ using pii = pair<int, int>;
 const int MAXN = 1e6+10;
 /// Value of Pi
 #define M_PI 3.14159265358979323846
+/// Constraints on the number of users in one face
+const int L = 512, R = 1024;
+
+/// Random Variable with a constant seed
+mt19937 rng(5);
 
 /// Timer
 struct timetracker {
@@ -310,9 +315,9 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
 
 
 /// For a convenience we mapped every point id to a number from 0 to n and every user id to a number from 0 to t
-/// realids maps point id to a number
-/// inputids maps number to a point id
-/// inputuserids maps number to a user id
+/// realids maps point id to number
+/// inputids maps number to point id
+/// inputuserids maps number to user id
 int realids[MAXN]; 
 int inputids[MAXN];
 int inputuserids[MAXN];
@@ -403,40 +408,44 @@ void latLonToXYZ(double latitude, double longitude, double& x, double& y, double
     z = EARTH_RADIUS * sin(latRad);
 }
 
+/// Function that finds an agle made by three points
 double eval(Point A, Point B, Point C){
+    /// Converting points A, B, C to floating-point coordinates
     array<double, 3> a, b, c;
     latLonToXYZ(A.x / 1e15, A.y / 1e15, a[0], a[1], a[2]);
     latLonToXYZ(B.x / 1e15, B.y / 1e15, b[0], b[1], b[2]);
     latLonToXYZ(C.x / 1e15, C.y / 1e15, c[0], c[1], c[2]);
-    
+
+    /// Finding vectors AB and BC
     array<double, 3> ab = {b[0] - a[0], b[1] - a[1], b[2] - a[2]};
     array<double, 3> bc = {c[0] - b[0], c[1] - b[1], c[2] - b[2]};
-    
+    /// Lengths of vectors AB and BC
     double ab_l = sqrt(ab[0] * ab[0] + ab[1] * ab[1] + ab[2] * ab[2]);
     double bc_l = sqrt(bc[0] * bc[0] + bc[1] * bc[1] + bc[2] * bc[2]);
+    /// Cross product of AB and VC
     double cr = ab[0] * bc[0] + ab[1] * bc[1] + ab[2] * bc[2];
-    
+    /// Final formula
     return acos(cr / ab_l / bc_l);
 }
 
+/// Function that evaluates the score of an answer
 double eval(vector<vector<int>> &ans, vector<Point> &pts) {
     double res = 0;
-    for (auto &ve : ans) {
+    for (auto &v : ans) {
+        /// Total curvature of a face
         double sum = 0;
-        for (int i = 0; i < ve.size(); ++i) {
-            int j = (i + 1) % ve.size();
-            int k = (i + 2) % ve.size();
+        for (int i = 0; i < v.size(); ++i) {
+            int j = (i + 1) % v.size();
+            int k = (i + 2) % v.size();
             Point A = pts[i], B = pts[j], C = pts[k];
+            /// Adding angle to a total sum
             sum += eval(A, B, C);
         }
+        /// Result is the maximal curvature
         res = max(res, sum);
     }
     return res;
 }
-
-mt19937 rng(5);
-
-const int L = 512, R = 1024;
 
 struct pqnode{
     double ang;
