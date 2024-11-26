@@ -1,3 +1,11 @@
+/// Gist of the solution: 
+/// 1) Convert graph into a "usable format" - find all faces, delete redundant faces (those that lie inside of another face), 
+///     find the number of users inside of each face
+/// 2) Start the process of finding possible solutions while we still have time. This process consists of 2 parts: 
+///    a) Split faces into rough components of a size around 512
+///    b) For every small component (its size is less than 512), try to distribute its faces between this componenent's neighbors
+///    c) Verify that resulting solution fits the requirments and update the answer if needed
+
 #include <bits/stdc++.h>
 
 using namespace std;
@@ -77,7 +85,6 @@ struct Point {
 
 /// Since we initially used floating point calculations, instead of redefining functions
 /// we just used macros
-
 #define le(a, b) (a <= b)
 #define eq(a, b) (a == b)
 
@@ -132,7 +139,6 @@ inline bool operator <(const event& e1, const event& e2){
 /// For an easier implementation, we used a version of union-find that utilizes one array p
 /// if p[u] >= 0, them p[u] is a parent of u
 /// if p[u] < 0, then it means that u is a roo of its component and p[u] is a negative size of a set
-
 struct dsu {
     vector<int> p;
     dsu(int n): p(n, -1) {}
@@ -163,7 +169,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
     vector<vector<bool>> used(n);
 
     /// Here we are deleting all points that are not part of any cycle and therefore can't be part of a face
-    /// We are doing it in a bfs-like matter, where we add vertices that we need to delete in a queue (though we used vector for this implementation)
+    /// We are doing it in a bfs-like manner, where we add vertices that we need to delete in a queue (though we used vector instead of a queue)
     vector<int> bfs;
     for (int i = 0; i < n; ++i) {
         /// adj[i].size() == 1 means that vertex has only one neighbor, and therefore it should be deleted
@@ -185,7 +191,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
                 break;
             }
         }
-        /// adding v to the queue if it now becomes a vertex with one neighbor
+        /// adding v to the queue if it now becomes a vertex with an only one neighbor
         if (adj[v].size() == 1) {
             bfs.push_back(v);
         }
@@ -381,9 +387,9 @@ void scanline(const ve<Point>& p, ve<ve<int> >& faces, ve<int>& cnt, ve<Point>& 
 
 /// Function that finds edges between adjacent faces and also array of faces that lie on the border
 /// Since every edge in the planar graph has only two faces (one for each side) that use this edge
-/// So, for every edge we find two faces that
+/// So, for every edge we find two faces (or possible only one if the edge is on the border) lying on both sides of the edge, 
+///  and add an edge between these two faces (or, add the face to the "border" list)
 vector<pii> init_edges(vector<vector<int>> &faces, ve<int>& border) {
-    /// for every edge, we are adding faces that use this edge
     map<pii, vector<int>> mp;
     for (int i = 0; i < faces.size(); ++i) {
         auto &ve = faces[i];
@@ -399,13 +405,13 @@ vector<pii> init_edges(vector<vector<int>> &faces, ve<int>& border) {
     for (auto &[_, a] : mp) {
         sort(a.begin(), a.end());
         a.erase(unique(a.begin(), a.end()), a.end());
-        /// if a.size() > 1, that means that faces a[0] and a[1] are connected 
+        /// if a.size() > 1, that means that faces a[0] and a[1] are connected by this edge
         if (a.size() > 1) {
             edges.emplace_back(a[0], a[1]);
         } /// if a.size() == 1, that means that face lies on the border
         else border.push_back(a[0]);
     }
-    /// getting rid of all possible duplicates 
+    /// getting rid of duplicates 
     sort(border.begin(), border.end());
     border.erase(unique(border.begin(), border.end()), border.end());
     sort(edges.begin(), edges.end());
@@ -440,9 +446,8 @@ double eval(Point A, Point B, Point C){
     /// Lengths of vectors AB and BC
     double ab_l = sqrt(ab[0] * ab[0] + ab[1] * ab[1] + ab[2] * ab[2]);
     double bc_l = sqrt(bc[0] * bc[0] + bc[1] * bc[1] + bc[2] * bc[2]);
-    /// Cross product of AB and VC
+    /// Cross product of AB and BC
     double cr = ab[0] * bc[0] + ab[1] * bc[1] + ab[2] * bc[2];
-    /// Final formula
     return acos(cr / ab_l / bc_l);
 }
 
@@ -456,7 +461,6 @@ double eval(vector<vector<int>> &ans, vector<Point> &pts) {
             int j = (i + 1) % v.size();
             int k = (i + 2) % v.size();
             Point A = pts[i], B = pts[j], C = pts[k];
-            /// Adding angle to a total sum
             sum += eval(A, B, C);
         }
         /// Result is the maximal curvature
@@ -478,10 +482,12 @@ inline bool operator <(const pqnode& a, const pqnode& b){
 int main(){
     ios_base::sync_with_stdio(0); cin.tie(0);
     timetracker timer;
+    /// Starting the timer
     timer.begintimer();
     int n;
     cin >> n;
 
+    /// Adjusting TL depending on a size of n
     int TL = 9000;
     if (n >= 1e5) TL = 28000;
 
@@ -504,6 +510,7 @@ int main(){
         a = realids[a]; b = realids[b];
         es.push_back(minmax(a, b));
     }
+    /// Getting rid of duplicate edges
     sort(es.begin(), es.end());
     es.erase(unique(es.begin(), es.end()), es.end());
     for(auto [a, b] : es){
@@ -511,8 +518,11 @@ int main(){
         node_graph[b].push_back(a);
     }
 
+    /// Finding faces
     ve<ve<int> > faces = find_faces(pts, node_graph, 0);
+    /// Deleting redundant faces
     delete_inner(pts, faces);
+    
     int z = faces.size();
 
     int t;
@@ -528,19 +538,26 @@ int main(){
         i.y = readlds();
     }
 
+    /// cnt[i] - number of users inside of the i'th face
+    /// who[i] - list of users that are inside of the i'th face
     ve<int> cnt(faces.size(), 0);
     ve<ve<int> > who(faces.size());
+    /// Finding the number of users inside of each face using scanline
     scanline(pts, faces, cnt, users, who);
+    /// Border - list of faces that lie on the border of the graph
     ve<int> border;
+    /// Finding edges between adjacent faces
     auto edges = init_edges(faces, border);
-    dsu d(z);
 
+    /// faceg - graph made by faces and edges between these faces
     ve<ve<int> > faceg(z);
     for(auto [a, b] : edges){
         faceg[a].push_back(b);
         faceg[b].push_back(a);
     }
 
+    /// Part of our greedy strategy requires distance from the border
+    /// We are determining it using bfs
     ve<int> borderdst(z, 1e9);
     {
         queue<int> q;
@@ -558,6 +575,8 @@ int main(){
                 }
         }
     }
+
+    /// Finding connnected components of the graph using dfs
     ve<int> compall(z, -1);
 
     auto dfs = [&](int v){
@@ -580,13 +599,27 @@ int main(){
         }
     }
 
+    /// _ans - list of final faces
+    /// _ansusers - lists of users lying inside of the corresponding faces
+    /// bst - score of the best solution
     vector<vector<int>> _ans;
     vector<vector<int>> _ansusers;
     double bst = 1e18;
 
+    /// Repeat the process while we have time
     while (timer.get() < TL) {
+        /// Shuffling adjacency lists of faces to have ~random solutions 
         for(auto& i : faceg)
             shuffle(i.begin(), i.end(), rng);
+        /// In the first step of the algorithm, we are splitting the vertices in the components of the size around 512.
+        /// We're going to do that using greedy strategy: 
+        /// First, choose a face that is the closest to the border (we're doing that to distribute faces more evenly)
+        ///  and to avoid cases where we will have some faces "cut off" the whole graph)
+        /// Then, start adding new faces to it in a dijikstra-like manner, comparing faces using a greedy criteria described near the pqnode.
+        /// When we can't add a face to our current component, add it to the list of possible new starts
+        /// Repeat until the list of starts is non empty
+
+        /// Comparator for starts
         auto compare = [&](int a, int b){
             return borderdst[a] > borderdst[b];
         };
@@ -596,20 +629,26 @@ int main(){
         iota(startorder.begin(), startorder.end(), 0);
         shuffle(startorder.begin(), startorder.end(), rng);
         for(auto i : startorder) {
+            /// In each connected component, initially we want to have only one start
             if(borderdst[i] == 0 && !viscompall[compall[i]]){
                 viscompall[compall[i]] = 1;
                 start.push(i);
             }
         }
+
+        /// compcol[i] - components to which the i'th face belongs
+        /// compsz[i] - number of users inside of the i'th component
         ve<int> compcol(z, -1), compsz = cnt;
         vector<bool> used(z);
+        /// vals[i] - current value of the i'th face (we're comparing them inside of the heap)
         ve<pqnode> vals(z);
         while(!start.empty()){
             int s = start.top();
             start.pop();
-            if(compcol[s] != -1) continue;
+            if(compcol[s] != -1) continue; /// This start is already a part of some component
             compcol[s] = s;
             priority_queue<pqnode> q;
+            /// outer is a set with edges on the border of our current component
             set<pii> outer;
             vals[s] = {-1, 1, s};
             q.push(vals[s]);
@@ -654,13 +693,21 @@ int main(){
                 }
             }
         }
+
+
+        /// Here starts the part where we split small components back into faces and distribute them between neighbors of the component
+        
         bool done = true;
 
+        /// comp[i] - list of faces lying in the i'th component
         vector<vector<int>> comp(z);
         for (int i = 0; i < z; ++i) {
             comp[compcol[i]].push_back(i);
         }
+        
+        /// mrk[i] - marks whether the i'th face is part of a good (not small) component
         vector<int> mrk(z, 1);
+        /// to_process - list of all small components that we need to break down 
         vector<int> to_process;
         for (int i = 0; i < z; ++i) {
             if (comp[i].size() > 0 && compsz[i] < L) {
@@ -671,7 +718,6 @@ int main(){
             }
         }
 
-        vector<int> bdst(z, -1);
         vector<vector<int>> temp_g(z);
         vector<int> pt(z);
         shuffle(to_process.begin(), to_process.end(), rng);
@@ -778,12 +824,10 @@ int main(){
             for (auto &u : nei) {
                 temp_g[u].clear();
                 pt[u] = 0;
-                bdst[u] = -1;
             }
             for (auto &u: cmp) {
                 temp_g[u].clear();
                 pt[u] = 0;
-                bdst[u] = -1;
             }
         }
 
