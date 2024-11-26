@@ -486,7 +486,7 @@ int main(){
     int n;
     cin >> n;
 
-    /// Adjusting TL depending on a size of n
+    /// Adjusting TL depending on the size of n
     int TL = 9000;
     if (n >= 1e5) TL = 28000;
 
