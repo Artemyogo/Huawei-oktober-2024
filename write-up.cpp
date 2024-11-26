@@ -84,6 +84,7 @@ struct Point {
 /// Function for finding a sign of a number
 int sgn(const __int128& x) { return eq(x, 0) ? 0 : le(x, 0) ? -1 : 1; }
 
+// Struct of edge of polygon where up is id of face/user
 struct edge {
     Point l, r;
     int up;
@@ -95,12 +96,14 @@ struct edge {
     }
 };
 
+//struct for event in scanline sorted by x
 struct event{
     int type; //-1 — del, 0 — get, 1 - add
     ll x;
     edge e;
 };
 
+//comparator for non-intersecting edges where e1 < e2 if e1 is lower than e2
 inline bool edge_cmp(const edge& e1, const edge&e2){
     Point a = e1.l, b = e1.r;
     Point c = e2.l, d = e2.r;
@@ -113,6 +116,7 @@ inline bool edge_cmp(const edge& e1, const edge&e2){
     return e1.up < e2.up;
 }
 
+// comparator for event we need to add and del first and only then get
 inline bool operator <(const event& e1, const event& e2){
     if(!eq(e1.x, e2.x))
         return e1.x < e2.x;
@@ -150,6 +154,7 @@ struct dsu {
     }
 };
 
+//number of innner faces since this number is used only while finding outerfaces
 int cntinner;
 
 vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, bool inner) {
@@ -189,6 +194,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
 
     for (int i = 0; i < n; i++) {
         used[i].assign(adj[i].size(), 0);
+        //comparator for angle of edge
         auto compare = [&](int l, int r) {
             Point pl = vertices[l] - vertices[i];
             Point pr = vertices[r] - vertices[i];
@@ -209,9 +215,11 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
             int e = edge_id;
             ve<ve<int> > cfaces;
             map<int, bool> vis;
+            //while cycle is not completed
             while (!used[v][e]) {
                 used[v][e] = true;
                 cface.push_back(v);
+                //distinguishing cycles in cycles
                 if(vis[v]){
                     cfaces.emplace_back();
                     do{
@@ -221,6 +229,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
                 }
                 vis[v] = 1;
                 int u = adj[v][e];
+                //the same comparator as before
                 int e1 = lower_bound(adj[u].begin(), adj[u].end(), v, [&](int l, int r) {
                     Point pl = vertices[l] - vertices[u];
                     Point pr = vertices[r] - vertices[u];
@@ -237,6 +246,7 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
             }
             reverse(cface.begin(), cface.end());
             cfaces.push_back(cface);
+            //finding if face is inner or outer by signed sum
             for(auto face : cfaces){
                 int sign = 0;
                 Point p1 = vertices[face[0]];
@@ -255,18 +265,24 @@ vector<vector<int>> find_faces(vector<Point> vertices, vector<vector<int>> adj, 
     return faces;
 }
 
+//deleting faces in faces using scanline
+//if there is lower edge of the face next below to the lower edge of the second face than second face needs to be deleted
 void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
     int n = p.size();
     ve<event> es;
     dsu ds(faces.size());
     ve<pair<pii, pii> > ces;
+    //memorising edges with structure {{PointID, PointID}, {FaceID, IsUpper}}
     for(int it = 0; it < faces.size(); it++){
         auto &f = faces[it];
         ces.push_back({minmax(f.front(), f.back()), {it, f.front() < f.back()}});
         for(int i = 1; i < f.size(); i++)
             ces.push_back({minmax(f[i], f[i - 1]), {it, f[i] < f[i - 1]}});
     }
+    //sorting events
     sort(ces.begin(), ces.end());
+    
+    //adding outer edges to events
     for(int it = 0; it < ces.size(); it++){
         if((it == 0 || ces[it - 1].fi != ces[it].fi) && (it == ces.size() - 1 || ces[it + 1].fi != ces[it].fi)){
             auto [i, prev] = ces[it].fi;
@@ -285,8 +301,10 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
             ds.unite(ces[it].se.fi, ces[it - 1].se.fi);
         }
     }
+    //sorting events and memorising which faces need to be deleted
     sort(es.begin(), es.end());
     ve<bool> del(faces.size());
+
     set<edge, decltype(*edge_cmp)> st(edge_cmp);
     for(auto [tp, x, e] : es){
         if(tp == 1){
