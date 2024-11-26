@@ -19,8 +19,6 @@ using namespace std;
 
 using pii = pair<int, int>;
 
-/// Constants
-
 /// Max size of N used for static arrays
 const int MAXN = 1e6+10;
 /// Value of Pi
@@ -138,7 +136,7 @@ inline bool operator <(const event& e1, const event& e2){
 /// Union-find data structure with path-compression and small-to-large merging
 /// For an easier implementation, we used a version of union-find that utilizes one array p
 /// if p[u] >= 0, them p[u] is a parent of u
-/// if p[u] < 0, then it means that u is a roo of its component and p[u] is a negative size of a set
+/// if p[u] < 0, then it means that u is a root of its component and p[u] is a negative size of the component
 struct dsu {
     vector<int> p;
     dsu(int n): p(n, -1) {}
@@ -307,6 +305,7 @@ void delete_inner(const ve<Point>& p, ve<ve<int> >& faces){
             ds.unite(ces[it].se.fi, ces[it - 1].se.fi);
         }
     }
+    
     //sorting events and memorising which faces need to be deleted
     sort(es.begin(), es.end());
     ve<bool> del(faces.size());
@@ -696,6 +695,10 @@ int main(){
 
 
         /// Here starts the part where we split small components back into faces and distribute them between neighbors of the component
+        /// Some definitions: 
+        /// bad component - component that has less than 512 users
+        /// good component - component that is not bad
+        /// bad/good face - faces that is a part of bad/good component
         
         bool done = true;
 
@@ -705,7 +708,7 @@ int main(){
             comp[compcol[i]].push_back(i);
         }
         
-        /// mrk[i] - marks whether the i'th face is part of a good (not small) component
+        /// mrk[i] - marks whether the i'th face is part of a good component
         vector<int> mrk(z, 1);
         /// to_process - list of all small components that we need to break down 
         vector<int> to_process;
@@ -718,12 +721,15 @@ int main(){
             }
         }
 
+        /// temp_g - local array that we will use to keep a graph on only relevant faces
         vector<vector<int>> temp_g(z);
         vector<int> pt(z);
         shuffle(to_process.begin(), to_process.end(), rng);
         for (auto &ci : to_process) {
             auto cmp = comp[ci];
-            vector<int> nei, bfs;
+            /// nei - list of neighboring good faces
+            vector<int> nei;
+            /// same as in the first part
             set<pii> outer;
             auto toggle = [&](pii e) {
                 if (outer.count(e)) {
@@ -739,7 +745,7 @@ int main(){
                     prev = i;
                 }
                 for (auto &v : faceg[u]) {
-                    if (mrk[v]) {
+                    if (mrk[v]) { /// v is a part of a good component
                         nei.push_back(v);
                     }
                     temp_g[v].push_back(u);
@@ -749,25 +755,8 @@ int main(){
 
             sort(nei.begin(), nei.end());
             nei.erase(unique(nei.begin(), nei.end()), nei.end());
-            set<pqnode> s;
-            auto recalc = [&](int u) {
-                auto &f = faces[u];
-                vals[u] = {0, 1, u};
-                for (int i = 0; i < f.size(); ++i) {
-                    int a = f[i];
-                    int b = f[(i + 1) % f.size()];
-                    int c = f[(i + 2) % f.size()];
-                    if(outer.count(minmax(a, b)) && outer.count(minmax(b, c))) {
-                        vals[u].cnt++;
-                        vals[u].ang += eval(pts[a], pts[b], pts[c]);
-                    }
-                }
-            };
-            for (auto &u : nei) {
-                recalc(u);
-                s.insert(vals[u]);
-            }
 
+            /// We randomly decide between shuffling faces or sorting them by the number of users inside
             if (rng() & 1) {
                 for (auto &u : cmp) {
                     sort(temp_g[u].begin(), temp_g[u].end(), [&](int x, int y) {
@@ -788,21 +777,51 @@ int main(){
                 }
             }
 
+            /// Here we used a set because it turned out to be faster than priority_queue
+            set<pqnode> s;
+            /// Function that recalcs a value of u-th face
+            auto recalc = [&](int u) {
+                auto &f = faces[u];
+                vals[u] = {0, 1, u};
+                for (int i = 0; i < f.size(); ++i) {
+                    int a = f[i];
+                    int b = f[(i + 1) % f.size()];
+                    int c = f[(i + 2) % f.size()];
+                    if(outer.count(minmax(a, b)) && outer.count(minmax(b, c))) {
+                        vals[u].cnt++;
+                        vals[u].ang += eval(pts[a], pts[b], pts[c]);
+                    }
+                }
+            };
+
+            /// In our set we keep only good faces, so initally we insert only them
+            for (auto &u : nei) {
+                recalc(u);
+                s.insert(vals[u]);
+            }
+
+            /// The process looks like this: 
+            /// 1) We take "the best" face from the set
+            /// 2) We are trying to add the next face from its adjacency list to the component of our face
+            /// 3) If we can do that, we recalc the value of all affected faces and return to the Step 1
+            /// 4) We will reinsert our face to the set only if there are any other faces we can theoretically add to it
             while(!s.empty()) {
                 auto [_, __, u] = *prev(s.end());
                 s.erase(prev(s.end()));
                 int id = compcol[u];
-                for (; pt[u] < temp_g[u].size(); ++pt[u]) {
+                for (; pt[u] < temp_g[u].size(); ++pt[u]) { 
                     int v = temp_g[u][pt[u]];
                     if (!mrk[v] && compsz[id] + cnt[v] <= R) {
                         mrk[v] = 1;
                         compcol[v] = id;
                         compsz[id] += cnt[v];
                         int prev = faces[v].back();
+                        /// Update the outer face 
                         for(auto i : faces[v]) {
                             toggle(minmax(prev, i));
                             prev = i;
                         }
+                        /// recalc the value of all possibly affected faces
                         recalc(v);
                         s.insert(vals[v]);
                         for (auto &to : temp_g[v]) {
@@ -815,12 +834,14 @@ int main(){
                         break;
                     }
                 }
+                /// Insert back only if there are any other faces that we can theorically connect to u
                 if (pt[u] != temp_g[u].size()) {
                     recalc(u);
                     s.insert(vals[u]);
                 }
             }
 
+            /// Clear all local arrays we used
             for (auto &u : nei) {
                 temp_g[u].clear();
                 pt[u] = 0;
@@ -831,6 +852,7 @@ int main(){
             }
         }
 
+        /// If there is a component with a size less than L, then we failed and our solution shouldn't be further considered
         for (int i = 0; i < z; ++i) {
             if (compsz[compcol[i]] < L) {
                 done = false;
