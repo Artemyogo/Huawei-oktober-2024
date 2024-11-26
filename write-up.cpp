@@ -1,9 +1,9 @@
 /// Gist of the solution: 
-/// 1) Convert graph into a "usable format" - find all faces, delete redundant faces (those that lie inside of another face), 
+/// 1) Convert given graph into a "usable format" - find all faces, delete redundant faces (those that lie inside of another face), 
 ///     find the number of users inside of each face
 /// 2) Start the process of finding possible solutions while we still have time. This process consists of 2 parts: 
 ///    a) Split faces into rough components of a size around 512
-///    b) For every small component (its size is less than 512), try to distribute its faces between this componenent's neighbors
+///    b) For every small component (with a size less than 512) try to distribute its faces between this componenent's neighbors
 ///    c) Verify that resulting solution fits the requirments and update the answer if needed
 
 #include <bits/stdc++.h>
